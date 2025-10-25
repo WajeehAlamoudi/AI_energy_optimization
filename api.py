@@ -1,3 +1,4 @@
+import json
 from threading import Thread
 
 from fastapi import FastAPI, Body
@@ -192,6 +193,15 @@ def activate_optimizer(home: str = "Default", interval_sec: int = 3600):
         "interval_sec": interval_sec,
         "message": f"Optimizer activated for {home} (every {interval_sec}s)."
     }
+
+
+@app.get("/api/live_data")
+def live_data(home: str = "Default"):
+    path = LOGS_DIR / home / f"{home.lower().replace(' ', '_')}_live_log.json"
+    if path.exists():
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"status": "no_data"}
 
 
 # === 📊 KPIS ===
