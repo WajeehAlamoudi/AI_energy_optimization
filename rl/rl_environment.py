@@ -2,7 +2,7 @@ import json
 import random
 from pathlib import Path
 from paths import DATA_DIR
-
+import requests
 import numpy as np
 from device_manager import DeviceManager
 from home_manager import HomeManager
@@ -13,16 +13,54 @@ class SmartHomeEnv:
     # to be set by the user comfort_range
     # given indoor_temp
     # given outdoor_temp
-    def __init__(self, home_name=None, comfort_range=(21, 25)):
+    def __init__(self, home_name=None, mode="real", comfort_range=(21, 25)):
         """
         Smart Home Environment
         If home_name is provided, it will load devices and comfort range
         from HomeManager (per-home configuration).
         Otherwise, it uses the global device catalog.
         """
+
+        def get_user_location():
+            """Get user's city and coordinates from IP."""
+            try:
+                r = requests.get("https://ipapi.co/json/", timeout=5)
+                data = r.json()
+                return {
+                    "city": data.get("city", "Unknown"),
+                    "lat": data.get("latitude", 0.0),
+                    "lon": data.get("longitude", 0.0),
+                    "country": data.get("country_name", "Unknown")
+                }
+            except Exception as e:
+                print(f"⚠️ Failed to get user location: {e}")
+                # fallback to Istanbul
+                return {"city": "Istanbul", "lat": 41.0082, "lon": 28.9784, "country": "Türkiye"}
+
+        loc = get_user_location()
+        self.city = loc["city"]
+        self.lat = loc["lat"]
+        self.lon = loc["lon"]
+        self.country = loc["country"]
+
+        def get_real_outdoor_temp(lat, lon):
+            """Fetch real outdoor temperature using Open-Meteo (no API key required)."""
+            try:
+                url = (
+                    f"https://api.open-meteo.com/v1/forecast?"
+                    f"latitude={lat}&longitude={lon}&current=temperature_2m"
+                )
+                r = requests.get(url, timeout=5)
+                data = r.json()
+                return data["current"]["temperature_2m"]
+            except Exception as e:
+                print(f"⚠️ Weather API failed: {e}")
+                return random.uniform(20, 35)
+
         self.home_name = home_name
         self.home_manager = HomeManager()
         self.manager = DeviceManager()
+        self.mode = mode
 
         # --- Load device context ---
         if self.home_name and self.home_name in self.home_manager.homes:
@@ -41,8 +79,14 @@ class SmartHomeEnv:
 
         # --- Initialize dynamic variables ---
         self.indoor_temp = random.uniform(20, 26)
-        # make it real belooow
-        self.outdoor_temp = random.uniform(10, 40)
+
+        if self.mode == "real":
+            self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
+            print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
+        else:
+            self.outdoor_temp = random.uniform(10, 40)
+            print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
+
         self.total_kWh = 0.0
         self.step_count = 0
 
