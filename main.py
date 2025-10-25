@@ -4,10 +4,12 @@ Author: Abdulrahman Alamoudi
 """
 
 import os
+import time
 from pathlib import Path
 from impact_calibrator import ImpactCalibrator
 from device_manager import DeviceManager
 from home_manager import HomeManager
+from lstm_predictor import LSTMPredictor
 from rl.rl_environment import SmartHomeEnv
 from rl.rl_agent import RLAgent
 from training_kpi_logger import TrainingKPI
@@ -77,7 +79,7 @@ def evaluate_trained_agent(home_name):
         total_energy += info["energy_used"]
         temps.append(info["indoor_temp"])
 
-        print(f"[Hour {hour+1:02d}] {info['device']} → {info['action']} | "
+        print(f"[Hour {hour + 1:02d}] {info['device']} → {info['action']} | "
               f"Energy: {info['energy_used']:.3f} kWh | Temp: {info['indoor_temp']:.2f}°C | Reward: {reward:.3f}")
 
         state = next_state
@@ -87,8 +89,36 @@ def evaluate_trained_agent(home_name):
     print("\n=== 📊 SUMMARY ===")
     print(f"Total Reward: {total_reward:.3f}")
     print(f"Total Energy Used: {total_energy:.3f} kWh")
-    print(f"Average Temperature: {sum(temps)/len(temps):.2f}°C")
+    print(f"Average Temperature: {sum(temps) / len(temps):.2f}°C")
     print(f"Comfort Range: {env.comfort_min}-{env.comfort_max}°C")
+
+
+def run_live_agent(home_name):
+    env = SmartHomeEnv(home_name)
+    lstm = LSTMPredictor("models/lstm_model.pth")
+    agent = RLAgent(state_size=4, action_size=len(env.action_space))
+    agent.load_model("models/checkpoints/final_agent_model.pth")
+    agent.epsilon = 0.0  # deterministic actions
+
+    for hour in range(24):
+        # Collect sensor data
+        indoor_temp = env.indoor_temp
+        outdoor_temp = ...  # from weather API
+        total_kWh = env.total_kWh
+
+        # Predict next state
+        predicted_kWh, predicted_temp = lstm.predict([
+            indoor_temp, total_kWh, outdoor_temp, hour
+        ])
+
+        state = [indoor_temp, total_kWh, predicted_temp, predicted_kWh]
+        action_idx = agent.act(state)
+        next_state, reward, done, info = env.step(action_idx)
+
+        print(f"[{hour + 1:02d}] {info['device']} → {info['action']} | "
+              f"Temp: {info['indoor_temp']:.2f}°C | kWh: {info['energy_used']:.2f} | Reward: {reward:.2f}")
+
+        time.sleep(1)  # simulate 1-hour delay (real-time mode)
 
 
 def main():

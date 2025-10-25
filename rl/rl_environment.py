@@ -41,6 +41,7 @@ class SmartHomeEnv:
 
         # --- Initialize dynamic variables ---
         self.indoor_temp = random.uniform(20, 26)
+        # make it real belooow
         self.outdoor_temp = random.uniform(10, 40)
         self.total_kWh = 0.0
         self.step_count = 0
