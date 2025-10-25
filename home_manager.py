@@ -1,21 +1,40 @@
 import json
 from pathlib import Path
 from device_manager import DeviceManager
+from paths import DATA_DIR
 
 
 class HomeManager:
-    def __init__(self, homes_path="/data/homes.json"):
+    def __init__(self, homes_path=DATA_DIR / "homes.json"):
         self.homes_path = Path(homes_path)
         self.homes_path.parent.mkdir(parents=True, exist_ok=True)  # ✅ auto-create /data/
         self.device_manager = DeviceManager()
+        self.homes = {}
         self.homes = self._load_homes()
 
     # ---------- Load & Save ----------
     def _load_homes(self):
         if self.homes_path.exists():
-            with open(self.homes_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        return {}
+            try:
+                with open(self.homes_path, "r", encoding="utf-8") as f:
+                    content = f.read().strip()
+                    if content:
+                        return json.loads(content)
+                    else:
+                        print("⚠️ homes.json empty — initializing new structure.")
+                        self.homes = {}
+                        self._save_homes()
+                        return {}
+            except json.JSONDecodeError:
+                print("⚠️ homes.json corrupted — resetting file.")
+                self.homes = {}
+                self._save_homes()
+                return {}
+        else:
+            print("ℹ️ homes.json not found — creating a new one.")
+            self.homes = {}
+            self._save_homes()
+            return {}
 
     def _save_homes(self):
         with open(self.homes_path, "w", encoding="utf-8") as f:

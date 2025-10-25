@@ -4,10 +4,11 @@ import pandas as pd
 import json
 from pathlib import Path
 import numpy as np
+from paths import DATA_DIR
 
 
 class ImpactCalibrator:
-    def __init__(self, catalog_path="data/devices_catalog.json", output_path="data/impact_map.json"):
+    def __init__(self, catalog_path= DATA_DIR / "devices_catalog.json", output_path= DATA_DIR / "impact_map.json"):
         self.catalog_path = Path(catalog_path)
         self.output_path = Path(output_path)
 

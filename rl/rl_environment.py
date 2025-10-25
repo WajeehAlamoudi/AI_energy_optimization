@@ -1,6 +1,7 @@
 import json
 import random
 from pathlib import Path
+from paths import DATA_DIR
 
 import numpy as np
 from device_manager import DeviceManager
@@ -45,7 +46,7 @@ class SmartHomeEnv:
         self.step_count = 0
 
         # --- Load or create impact map ---
-        impact_path = Path(r"AI_energy_optimization/data/impact_map.json")
+        impact_path = DATA_DIR / "impact_map.json"
         impact_path.parent.mkdir(parents=True, exist_ok=True)
         if not impact_path.exists():
             print("⚠️ Impact map not found. Running calibration...")

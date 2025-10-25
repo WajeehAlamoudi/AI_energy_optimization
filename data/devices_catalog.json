@@ -7,8 +7,7 @@
       "set_low",
       "set_medium",
       "set_high",
-      "eco_mode",
-      "night_mode"
+      "eco_mode"
     ]
   },
   "Heater": {

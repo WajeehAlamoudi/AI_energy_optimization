@@ -1,67 +1,52 @@
 """
-Test the full AI-Driven Energy Optimization backend pipeline.
-Covers:
-1. Device catalog management
-2. Home & room setup
-3. Room renaming
-4. Impact calibration
-5. RL environment setup and one interaction step
+🧪 Test: HomeManager — Home, Room, and Device assignment checks
 """
 
-from device_manager import DeviceManager
 from home_manager import HomeManager
-from impact_calibrator import ImpactCalibrator
-from rl.rl_environment import SmartHomeEnv
-from rl.rl_agent import RLAgent
-import random
+from pathlib import Path
+from pprint import pprint
 
-print("\n=== 🔧 STEP 1: DEVICE CATALOG TEST ===")
-device_manager = DeviceManager()
-all_devices = device_manager.get_all_devices()
-print(f"Loaded {len(all_devices)} devices.")
+print("=== 🏡 STEP 1: INITIALIZE HOME MANAGER ===")
+manager = HomeManager()
+print("Homes file path:", manager.homes_path)
+print("Existing homes:", list(manager.homes.keys()), "\n")
 
-# Add new permission test
-device_manager.add_permission("Air Conditioning", "night_mode")
+# 🧹 Reset before testing (optional safety)
+if "Villa 12" in manager.homes:
+    print(manager.delete_home("Villa 12"))
 
-print("\n=== 🏠 STEP 2: HOME & ROOM MANAGEMENT TEST ===")
-home_manager = HomeManager()
+# ------------------------------------------------------------
+# STEP 2️⃣: Add a home and rooms
+# ------------------------------------------------------------
+print("\n=== 🏠 STEP 2: ADD HOME & ROOMS ===")
+print(manager.add_home("Villa 12", comfort_range=(22, 26)))
+print(manager.add_room("Villa 12", "Living Room"))
+print(manager.add_room("Villa 12", "Kitchen"))
+print(manager.rename_room("Villa 12", "Kitchen", "Main Kitchen"))
 
-# Add new home
-print(home_manager.add_home("Villa 12"))
+# ------------------------------------------------------------
+# STEP 3️⃣: Assign devices
+# ------------------------------------------------------------
+print("\n=== 🔌 STEP 3: ASSIGN DEVICES TO ROOMS ===")
+print(manager.assign_device("Villa 12", "Living Room", "Air Conditioning"))
+print(manager.assign_device("Villa 12", "Living Room", "Tv"))
+print(manager.assign_device("Villa 12", "Main Kitchen", "Fridge"))
+print(manager.assign_device("Villa 12", "Main Kitchen", "Oven"))
 
-# Add rooms
-print(home_manager.add_room("Villa 12", "Living Room"))
-print(home_manager.add_room("Villa 12", "Bedroom"))
+# ------------------------------------------------------------
+# STEP 4️⃣: Duplicate assignment check
+# ------------------------------------------------------------
+print("\n=== ⚠️ STEP 4: DUPLICATE DEVICE TEST ===")
+print(manager.assign_device("Villa 12", "Living Room", "Tv"))
 
-# Rename room
-print(home_manager.rename_room("Villa 12", "Living Room", "Main Hall"))
+# ------------------------------------------------------------
+# STEP 5️⃣: Fetch and inspect
+# ------------------------------------------------------------
+print("\n=== 🧾 STEP 5: STRUCTURE VALIDATION ===")
+pprint(manager.homes["Villa 12"])
+print("\nDevices in Villa 12:", manager.get_home_devices("Villa 12"))
 
-# Assign devices
-print(home_manager.assign_device("Villa 12", "Main Hall", "Air Conditioning"))
-print(home_manager.assign_device("Villa 12", "Bedroom", "Heater"))
-
-# Check devices in the home
-print("Home devices:", home_manager.get_home_devices("Villa 12"))
-
-print("\n=== ⚙️ STEP 3: IMPACT CALIBRATION TEST ===")
-calibrator = ImpactCalibrator()
-impact_map = calibrator.calibrate()
-print(f"Generated {len(impact_map)} impact keywords.")
-print("Sample:", list(impact_map.items())[:5])
-
-print("\n=== 🤖 STEP 4: SMART HOME ENVIRONMENT TEST ===")
-env = SmartHomeEnv(home_name="Villa 12")
-print(f"Environment initialized for 'Villa 12' with {len(env.action_space)} possible actions.")
-
-state = env.reset()
-action_idx = random.randint(0, len(env.action_space) - 1)
-next_state, reward, done, info = env.step(action_idx)
-print("Action executed:", info)
-print("Next state:", next_state, "Reward:", reward)
-
-print("\n=== 🧠 STEP 5: RL AGENT TEST ===")
-agent = RLAgent(state_size=env.state_size, action_size=len(env.action_space))
-action = agent.act(state)
-print(f"Agent chose action index {action} — ({env.action_space[action]})")
-
-print("\n✅ All components executed successfully.")
+# ------------------------------------------------------------
+# STEP 6️⃣: Cleanup (optional)
+# ------------------------------------------------------------
+# print(manager.delete_home("Villa 12"))
