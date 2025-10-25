@@ -8,8 +8,11 @@ DATA_DIR = PROJECT_ROOT / "data"
 DATA_DIR.mkdir(parents=True, exist_ok=True)  # ensure it exists
 
 RAW_DATA_DIR = PROJECT_ROOT / "raw_data"
-DATA_DIR.mkdir(parents=True, exist_ok=True)  # ensure it exists
+RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)  # ensure it exists
 
 # Models directory
 MODELS_DIR = PROJECT_ROOT / "models"
 MODELS_DIR.mkdir(parents=True, exist_ok=True)
+
+LOGS_DIR = PROJECT_ROOT / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
