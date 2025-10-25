@@ -17,7 +17,7 @@ from paths import MODELS_DIR
 # SAVE_EVERY = 10 # save model every 10 episodes
 #
 
-def train_rl_agent(HOME_NAME="default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
+def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
     print("=== 🏠 INITIALIZING ENVIRONMENT ===")
     env = SmartHomeEnv(home_name=HOME_NAME)
     action_size = len(env.action_space)
@@ -125,6 +125,6 @@ def train_rl_agent(HOME_NAME="default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
     tracker.summary(last_n=10)
 
     print("\n=== ✅ TRAINING COMPLETE ===")
-    print(f"Model saved → {MODELS_DIR / 'checkpoints/final_agent_model.pth'}")
+    print(f"Model saved → {MODELS_DIR / f'checkpoints/{HOME_NAME}_final_agent_model.pth'}")
     print(f"KPI log → {tracker.csv_path}")
     print(f"Plots → {tracker.plots_dir}")

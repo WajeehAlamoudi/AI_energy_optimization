@@ -125,6 +125,7 @@ def train_agent(home: str = Body(...), episodes: int = Body(50)):
     result = train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
     return {
         "message": f"Training complete for home '{home}'",
+        "episodes": episodes,
         "model_path": str(model_path)
     }
 

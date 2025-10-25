@@ -2,7 +2,6 @@ import json
 import random
 from pathlib import Path
 from paths import DATA_DIR
-import requests
 import numpy as np
 from device_manager import DeviceManager
 from home_manager import HomeManager
@@ -123,7 +122,7 @@ class SmartHomeEnv:
         comfort_penalty = 0.0
         if not (self.comfort_min <= self.indoor_temp <= self.comfort_max):
             comfort_penalty = -abs(self.indoor_temp - np.mean([self.comfort_min, self.comfort_max]))
-        reward = -energy_used + comfort_penalty  # want to minimize kWh, maintain comfort
+        reward = -(energy_used * 0.8 + comfort_penalty * 2.2)
 
         done = self.step_count >= 24  # one simulated day
         next_state = np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)
