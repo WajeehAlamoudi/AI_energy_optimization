@@ -54,8 +54,7 @@ def train_rl_agent(HOME_NAME="Villa 12", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=
         for step in range(MAX_STEPS_PER_EPISODE):
             if lstm:
                 # 1️⃣ Prepare input for LSTM (features)
-                lstm_input = [indoor_temp, total_kWh, outdoor_temp, hour]
-
+                lstm_input = []
                 # LSTM predicts the next indoor temperature and kWh
                 predicted_kWh, predicted_temp = lstm.predict(lstm_input)
 

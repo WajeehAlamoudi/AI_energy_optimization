@@ -22,20 +22,28 @@ class SmartHomeEnv:
         """
 
         def get_user_location():
-            """Get user's city and coordinates from IP."""
+            """Detect user's city and coordinates using ipinfo.io (more reliable)."""
             try:
-                r = requests.get("https://ipapi.co/json/", timeout=5)
+                r = requests.get("https://ipinfo.io/json", timeout=5)
                 data = r.json()
+
+                # ipinfo returns "loc" as "lat,lon"
+                loc = data.get("loc", "41.0082,28.9784").split(",")
+                lat, lon = float(loc[0]), float(loc[1])
+
+                city = data.get("city", "Istanbul")
+                country = data.get("country", "TR")
+
                 return {
-                    "city": data.get("city", "Unknown"),
-                    "lat": data.get("latitude", 0.0),
-                    "lon": data.get("longitude", 0.0),
-                    "country": data.get("country_name", "Unknown")
+                    "city": city,
+                    "country": country,
+                    "lat": lat,
+                    "lon": lon
                 }
+
             except Exception as e:
-                print(f"⚠️ Failed to get user location: {e}")
-                # fallback to Istanbul
-                return {"city": "Istanbul", "lat": 41.0082, "lon": 28.9784, "country": "Türkiye"}
+                print(f"⚠️ Fallback to Istanbul due to: {e}")
+                return {"city": "Istanbul", "country": "TR", "lat": 41.0082, "lon": 28.9784}
 
         loc = get_user_location()
         self.city = loc["city"]
