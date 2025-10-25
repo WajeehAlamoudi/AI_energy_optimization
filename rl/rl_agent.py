@@ -40,13 +40,27 @@ class RLAgent:
         torch.save(self.model.state_dict(), path)
         print(f"✅ Model saved to: {path}")
 
-    def load_model(self, path=MODELS_DIR / "checkpoints/final_agent_model.pth"):
+    def load_model(self, path):
         if not os.path.exists(path):
-            print(f"⚠️ Model file not found: {path}")
+            print(f"⚠️ No model found for this home at: {path}")
+            print("➡️ Starting training from scratch.")
             return
-        self.model.load_state_dict(torch.load(path))
-        self.model.eval()
-        print(f"📦 Model loaded from: {path}")
+
+        try:
+            state_dict = torch.load(path, weights_only=True)
+            self.model.load_state_dict(state_dict)
+            self.model.eval()
+            print(f"📦 Model loaded successfully from: {path}")
+        except RuntimeError as e:
+            print(f"⚠️ Model mismatch or outdated checkpoint: {e}")
+            print("🔄 Resetting model weights for new architecture...")
+            self.model.apply(self._init_weights)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            nn.init.xavier_uniform_(m.weight)
+            if m.bias is not None:
+                nn.init.zeros_(m.bias)
 
     def act(self, state):
         if random.random() < self.epsilon:

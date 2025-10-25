@@ -17,10 +17,9 @@ from paths import MODELS_DIR
 # SAVE_EVERY = 10 # save model every 10 episodes
 #
 
-def train_rl_agent(HOME_NAME="Villa 12", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
+def train_rl_agent(HOME_NAME="default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
     print("=== 🏠 INITIALIZING ENVIRONMENT ===")
     env = SmartHomeEnv(home_name=HOME_NAME)
-    state_size = env.state_size
     action_size = len(env.action_space)
 
     lstm_path = MODELS_DIR / "lstm_model.pth"
@@ -39,7 +38,7 @@ def train_rl_agent(HOME_NAME="Villa 12", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=
     agent = RLAgent(state_size=state_size, action_size=action_size)
     agent.load_model(MODELS_DIR / "checkpoints/final_agent_model.pth")
 
-    tracker = TrainingKPI()
+    tracker = TrainingKPI(home_name=HOME_NAME)
     print("📊 KPI Logger ready.\n")
 
     # === TRAINING LOOP ===
@@ -116,11 +115,12 @@ def train_rl_agent(HOME_NAME="Villa 12", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=
 
         # === SAVE CHECKPOINT ===
         if episode % SAVE_EVERY == 0:
-            save_path = MODELS_DIR / f"checkpoints/agent_day{episode:03d}.pth"
+            save_path = MODELS_DIR / f"checkpoints/{HOME_NAME.lower().replace(' ', '_')}_ep{episode:03d}.pth"
             agent.save_model(save_path)
 
     # === FINALIZE ===
-    agent.save_model(MODELS_DIR / "checkpoints/final_agent_model.pth")
+    final_path = MODELS_DIR / f"checkpoints/{HOME_NAME.lower().replace(' ', '_')}_final.pth"
+    agent.save_model(final_path)
     tracker.plot(save=True, show=False)
     tracker.summary(last_n=10)
 

@@ -8,11 +8,13 @@ from paths import LOGS_DIR
 
 
 class TrainingKPI:
-    def __init__(self, csv_path: Path = LOGS_DIR / "training_kpis.csv"):
+    def __init__(self, home_name):
+        self.home_name = home_name.strip().title().replace(" ", "_")
+        self.home_log_dir = LOGS_DIR / self.home_name
+        self.home_log_dir.mkdir(parents=True, exist_ok=True)
 
-        self.csv_path = Path(csv_path)
-        self.plots_dir = Path(LOGS_DIR)
-        self.csv_path.parent.mkdir(parents=True, exist_ok=True)
+        self.csv_path = self.home_log_dir / "training_kpis.csv"
+        self.plots_dir = self.home_log_dir
 
         # Create header if not exist
         if not self.csv_path.exists():
@@ -45,27 +47,26 @@ class TrainingKPI:
     def plot(self, save=True, show=True):
         """Visualize and optionally save the reward, epsilon, and energy trends"""
         df = pd.read_csv(self.csv_path)
-        plt.figure(figsize=(10, 5))
 
+        plt.figure(figsize=(10, 5))
         plt.plot(df["episode"], df["reward"], label="Reward", color="blue", linewidth=2)
         plt.plot(df["episode"], df["total_energy_kWh"], label="Energy (kWh)", color="orange", linewidth=1.5)
         plt.plot(df["episode"], df["epsilon"], label="Epsilon", color="green", linestyle="--")
 
-        plt.title("Training KPIs Over Episodes")
+        plt.title(f"Training KPIs - {self.home_name}")
         plt.xlabel("Episode")
         plt.ylabel("Value")
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
 
-        # === Save ===
         if save:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            png_path = self.plots_dir / f"kpi_plot_{timestamp}.png"
-            pdf_path = self.plots_dir / f"kpi_plot_{timestamp}.pdf"
+            png_path = self.plots_dir / f"{self.home_name}_kpi_{timestamp}.png"
+            pdf_path = self.plots_dir / f"{self.home_name}_kpi_{timestamp}.pdf"
             plt.savefig(png_path)
             plt.savefig(pdf_path)
-            print(f"📊 KPI plot saved → {png_path.name} and {pdf_path.name}")
+            print(f"📊 KPI plot saved → {png_path.name}, {pdf_path.name}")
 
         if show:
             plt.show()
