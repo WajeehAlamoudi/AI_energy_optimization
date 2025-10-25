@@ -120,7 +120,7 @@ def get_weather():
 
 # === 🤖 TRAINING ===
 @app.post("/api/train")
-def train_agent(home: str = Body(...), episodes: int = Body(50)):
+def train_agent(home: str = Body(...), episodes: int = Body(30)):
     model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
     result = train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
     return {
