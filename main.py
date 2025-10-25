@@ -64,4 +64,3 @@ def run_live_agent(home_name="Default", interval_sec=60, continuous=True):
         # Stop after 24 steps unless continuous mode
         if not continuous and step >= 24:
             break
-

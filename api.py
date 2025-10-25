@@ -1,3 +1,5 @@
+from threading import Thread
+
 from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
@@ -7,6 +9,7 @@ from pathlib import Path
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
+from main import run_live_agent
 from rl.train_rl import train_rl_agent
 from rl.rl_environment import SmartHomeEnv
 from rl.rl_agent import RLAgent
@@ -157,6 +160,37 @@ def simulate_day(home: str = Body(...)):
         "total_energy_kWh": total_energy,
         "avg_temp": sum(temps) / len(temps),
         "comfort_range": [env.comfort_min, env.comfort_max]
+    }
+
+
+running_threads = {}
+
+
+@app.post("/api/activate_optimizer")
+def activate_optimizer(home: str = "Default", interval_sec: int = 3600):
+    """
+    Start the live RL optimizer for a specific home.
+    Runs asynchronously in a background thread.
+    """
+
+    def background_run():
+        try:
+            run_live_agent(home_name=home, interval_sec=interval_sec, continuous=True)
+        except Exception as e:
+            print(f"⚠️ Live optimizer crashed for {home}: {e}")
+
+    if home in running_threads and running_threads[home].is_alive():
+        return {"status": "already_running", "home": home}
+
+    thread = Thread(target=background_run, daemon=True)
+    thread.start()
+    running_threads[home] = thread
+
+    return {
+        "status": "started",
+        "home": home,
+        "interval_sec": interval_sec,
+        "message": f"Optimizer activated for {home} (every {interval_sec}s)."
     }
 
 
