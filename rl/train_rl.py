@@ -7,20 +7,31 @@ from tqdm import tqdm
 from rl.rl_agent import RLAgent
 from rl.rl_environment import SmartHomeEnv
 from training_kpi_logger import TrainingKPI
+from lstm_predictor import LSTMPredictor
 from paths import MODELS_DIR
 
 
 # === CONFIGURATION ===
-# NUM_EPISODES = 50              # simulate 50 days of RL training
-# MAX_STEPS_PER_EPISODE = 24     # each = 24 hours
-# SAVE_EVERY = 10                # save model every 10 episodes
+# NUM_EPISODES = 50 # simulate 50 days of RL training
+# MAX_STEPS_PER_EPISODE = 24 # each = 24 hours
+# SAVE_EVERY = 10 # save model every 10 episodes
 #
 
-def train_rl_agent(HOME_NAME ="Villa 12", NUM_EPISODES = 50, MAX_STEPS_PER_EPISODE = 24, SAVE_EVERY = 10):
+def train_rl_agent(HOME_NAME="Villa 12", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
     print("=== 🏠 INITIALIZING ENVIRONMENT ===")
     env = SmartHomeEnv(home_name=HOME_NAME)
     state_size = env.state_size
     action_size = len(env.action_space)
+
+    lstm_path = MODELS_DIR / "lstm_model.pth"
+    lstm = None
+    if lstm_path.exists():
+        print(f"✅ Found LSTM model at: {lstm_path}")
+        lstm = LSTMPredictor(model_path=lstm_path)
+        state_size = 4  # [current_temp, total_kWh, predicted_temp, predicted_kWh]
+    else:
+        print("⚠️ No LSTM model found. Using simulated state only.")
+        state_size = env.state_size  # fallback: 2 features
 
     print(f"Environment ready → {action_size} actions, state size {state_size}")
 
@@ -41,10 +52,28 @@ def train_rl_agent(HOME_NAME ="Villa 12", NUM_EPISODES = 50, MAX_STEPS_PER_EPISO
         temps = []
 
         for step in range(MAX_STEPS_PER_EPISODE):
+            if lstm:
+                # Prepare inputs for next-hour forecast
+                features = ["here will be the atts for lstm"]
+
+                # LSTM predicts next indoor temperature and kWh
+                predicted_kWh, predicted_temp = lstm.predict(features)
+
+                # Combine current & forecasted values
+                state_input = np.array([
+                    env.indoor_temp,  # current indoor temp
+                    env.total_kWh,  # current energy used so far
+                    predicted_temp,  # next predicted indoor temp
+                    predicted_kWh  # next predicted kWh
+                ], dtype=np.float32)
+            else:
+                # fallback if no LSTM
+                state_input = state
+
             loss_value = agent.replay(batch_size=32)
             total_loss += float(loss_value)
             # Choose action
-            action_idx = agent.act(state)
+            action_idx = agent.act(state_input)
             next_state, reward, done, info = env.step(action_idx)
 
             # Store experience
@@ -100,7 +129,3 @@ def train_rl_agent(HOME_NAME ="Villa 12", NUM_EPISODES = 50, MAX_STEPS_PER_EPISO
     print(f"Model saved → {MODELS_DIR / 'checkpoints/final_agent_model.pth'}")
     print(f"KPI log → {tracker.csv_path}")
     print(f"Plots → {tracker.plots_dir}")
-
-
-if __name__ == "__main__":
-    train_rl_agent()
