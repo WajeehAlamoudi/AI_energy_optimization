@@ -130,7 +130,7 @@ class SmartHomeEnv:
         # Dynamic weighting (optional — scales penalty by energy intensity)
         energy_weight = 0.8 if energy_used < 3.0 else 1.0
         # Final reward: lower energy and closer-to-comfort → higher reward
-        reward = -(energy_used * energy_weight + comfort_penalty * 2.2) + comfort_reward
+        reward = -(energy_used * energy_weight + comfort_penalty * 1.8) + comfort_reward
 
         done = self.step_count >= 24  # one simulated day
         next_state = np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)
