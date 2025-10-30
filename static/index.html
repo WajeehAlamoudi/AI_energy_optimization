@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Energy Optimization System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <div class="stars-container">
+            <div id="stars"></div>
+            <div id="stars2"></div>
+            <div id="stars3"></div>
+        </div>
+        <div class="welcome-container">
+            <h1>AI Energy Optimization System</h1>
+            <p class="welcome-subtitle">Advanced energy management for smart homes</p>
+            <div class="system-status">System status: <span id="system-status">Standby</span></div>
+            <button id="welcome-button">Welcome <span id="username">User</span></button>
+            <div id="init-loader" class="init-loader">
+                <div class="loader-spinner"></div>
+                <div id="init-status">Initializing system...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="main-dashboard" style="display: none;">
+        <!-- Header Section -->
+        <header>
+            <div class="header-left">
+                <h1 id="home-name">Home Name</h1>
+            </div>
+            <div class="header-center">
+                <h2>AI Energy Optimization</h2>
+            </div>
+            <div class="header-right">
+                <div class="weather-container">
+                    <span id="weather-icon">☀️</span>
+                    <span id="weather-temp">75°F</span>
+                </div>
+                <div class="date-container">
+                    <span id="current-date">October 31, 2025</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Savings Dashboard Container -->
+        <section class="savings-dashboard">
+            <div class="savings-container">
+                <h3 class="savings-title">Energy Optimization Dashboard</h3>
+
+                <!-- System Overview -->
+                <div class="system-overview">
+                    <div class="overview-item">
+                        <div class="overview-icon">🏠</div>
+                        <div class="overview-value"><span id="homes-count">1</span></div>
+                        <div class="overview-label">Homes</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-icon">🔌</div>
+                        <div class="overview-value"><span id="devices-count">8</span></div>
+                        <div class="overview-label">Devices</div>
+                    </div>
+                </div>
+
+                <!-- Savings Summary Section -->
+                <div class="savings-summary">
+                    <div class="savings-box">
+                        <h3>Energy Saved</h3>
+                        <div class="savings-value">
+                            <span id="kwh-saved">250</span>
+                            <span class="unit">KWH</span>
+                        </div>
+                    </div>
+                    <div class="savings-box">
+                        <h3>Money Saved</h3>
+                        <div class="savings-value">
+                            <span id="money-saved">$45</span>
+                            <span class="unit">USD</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optimization Status -->
+                <div class="optimization-status">
+                    <div class="status-indicator active">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Optimization Active</span>
+                    </div>
+                    <button id="start-optimization" class="optimization-button">Start Home Optimization</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Navigation Grid -->
+        <section class="navigation-grid">
+            <div class="nav-item" id="manage-homes">
+                <div class="nav-icon">🏠</div>
+                <h3>Manage Homes</h3>
+            </div>
+            <div class="nav-item" id="manage-devices">
+                <div class="nav-icon">🔌</div>
+                <h3>Manage Devices</h3>
+            </div>
+            <div class="nav-item" id="manage-dashboard">
+                <div class="nav-icon">📊</div>
+                <h3>Manage Dashboard</h3>
+            </div>
+            <div class="nav-item" id="train">
+                <div class="nav-icon">🧠</div>
+                <h3>Train</h3>
+            </div>
+            <div class="nav-item" id="about">
+                <div class="nav-icon">ℹ️</div>
+                <h3>About</h3>
+            </div>
+            <div class="nav-item" id="coming-soon">
+                <div class="nav-icon">🚀</div>
+                <h3>Coming Soon</h3>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 AI Energy Optimization System</p>
+        </footer>
+    </div>
+
+    <!-- Manage Homes Page -->
+    <div id="manage-homes-page" style="display: none;">
+        <!-- Header Section -->
+        <header>
+            <div class="header-left">
+                <h1 id="home-name">Home Name</h1>
+            </div>
+            <div class="header-center">
+                <h2>Manage Homes</h2>
+            </div>
+            <div class="header-right">
+                <button id="back-to-dashboard" class="back-button">← Back to Dashboard</button>
+            </div>
+        </header>
+
+        <!-- Home Selection Section -->
+        <section class="home-selection">
+            <div class="selection-container">
+                <label for="home-selector">Select Home:</label>
+                <select id="home-selector" class="home-dropdown">
+                    <option value="home1">Main Home</option>
+                    <option value="home2">Vacation House</option>
+                    <option value="home3">Office</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Home Management Options -->
+        <section class="home-management-options">
+            <div class="options-grid">
+                <div class="option-item">
+                    <div class="option-icon">➕🏠</div>
+                    <h3>Add Home</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">➕🚪</div>
+                    <h3>Add Room</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">✏️🚪</div>
+                    <h3>Rename Room</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🔌➡️</div>
+                    <h3>Assign Device</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">📊🏠</div>
+                    <h3>Home Summary</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🗑️🏠</div>
+                    <h3>Delete Home</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🗑️🚪</div>
+                    <h3>Delete Room</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 AI Energy Optimization System</p>
+        </footer>
+    </div>
+
+    <!-- Manage Devices Page -->
+    <div id="manage-devices-page" style="display: none;">
+        <!-- Header Section -->
+        <header>
+            <div class="header-left">
+                <h1 id="home-name">Home Name</h1>
+            </div>
+            <div class="header-center">
+                <h2>Manage Devices</h2>
+            </div>
+            <div class="header-right">
+                <button id="back-to-dashboard-from-devices" class="back-button">← Back to Dashboard</button>
+            </div>
+        </header>
+
+        <!-- Device Selection Section -->
+        <section class="device-selection">
+            <div class="selection-container">
+                <label for="device-selector">Select Device:</label>
+                <select id="device-selector" class="device-dropdown">
+                    <option value="device1">Living Room TV</option>
+                    <option value="device2">Kitchen Lights</option>
+                    <option value="device3">Bedroom AC</option>
+                    <option value="device4">Smart Thermostat</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Device Management Options -->
+        <section class="device-management-options">
+            <div class="options-grid">
+                <div class="option-item">
+                    <div class="option-icon">➕🔌</div>
+                    <h3>Add Device</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🔄🔌</div>
+                    <h3>Update Device</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🗑️🔌</div>
+                    <h3>Remove Device</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">➕🔑</div>
+                    <h3>Add Permission</h3>
+                </div>
+                <div class="option-item">
+                    <div class="option-icon">🗑️🔑</div>
+                    <h3>Remove Permission</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 AI Energy Optimization System</p>
+        </footer>
+    </div>
+
+    <!-- Train Page -->
+    <div id="train-page" style="display: none;">
+        <!-- Header Section -->
+        <header>
+            <div class="header-left">
+                <h1 id="home-name">Home Name</h1>
+            </div>
+            <div class="header-center">
+                <h2>Train AI Optimizer</h2>
+            </div>
+            <div class="header-right">
+                <button id="back-to-dashboard-from-train" class="back-button">← Back to Dashboard</button>
+            </div>
+        </header>
+
+        <!-- Home Selection Section -->
+        <section class="home-selection">
+            <div class="selection-container">
+                <label for="train-home-selector">Select Home:</label>
+                <select id="train-home-selector" class="home-dropdown">
+                    <option value="home1">Main Home</option>
+                    <option value="home2">Vacation House</option>
+                    <option value="home3">Office</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Training Options -->
+        <section class="training-options">
+            <div class="train-options-grid">
+                <div class="train-option-item">
+                    <div class="train-option-icon">🧠⚡</div>
+                    <h3>Train House Optimizer</h3>
+                    <p>Train the AI to optimize energy usage based on historical patterns.</p>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 68%;"></div>
+                        </div>
+                        <span class="progress-text">68% Trained</span>
+                    </div>
+                    <button class="train-button">Start Training</button>
+                </div>
+                <div class="train-option-item">
+                    <div class="train-option-icon">🔄⚙️</div>
+                    <h3>Simulate Optimizer</h3>
+                    <p>Run a simulation to estimate potential energy savings.</p>
+                    <div class="simulation-results">
+                        <div class="sim-result">
+                            <span class="sim-label">Est. Savings:</span>
+                            <span class="sim-value">15-22%</span>
+                        </div>
+                        <div class="sim-result">
+                            <span class="sim-label">Confidence:</span>
+                            <span class="sim-value">High</span>
+                        </div>
+                    </div>
+                    <button class="simulate-button">Run Simulation</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p>© 2025 AI Energy Optimization System</p>
+        </footer>
+    </div>
+</body>
+</html>

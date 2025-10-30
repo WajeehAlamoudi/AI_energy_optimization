@@ -1,45 +1,9 @@
 {
-  "high": {
-    "energy_factor": 1.204,
-    "temp_change": 0.126
-  },
-  "medium": {
-    "energy_factor": 1.018,
-    "temp_change": 0.03
-  },
-  "keep": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "night": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "power": {
-    "energy_factor": 1.0,
+  "dim": {
+    "energy_factor": 0.707,
     "temp_change": 0.0
   },
   "auto": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "save": {
-    "energy_factor": 0.784,
-    "temp_change": -0.071
-  },
-  "delay": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "timer": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "mode": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "quick": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
@@ -47,15 +11,7 @@
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "start": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "charge": {
-    "energy_factor": 1.311,
-    "temp_change": 0.0
-  },
-  "standard": {
+  "standby": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
@@ -63,15 +19,7 @@
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "standby": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "eco": {
-    "energy_factor": 0.719,
-    "temp_change": -0.094
-  },
-  "performance": {
+  "standard": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
@@ -79,40 +27,92 @@
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "turn": {
+  "high": {
+    "energy_factor": 1.208,
+    "temp_change": 0.277
+  },
+  "keep": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "warm": {
-    "energy_factor": 1.316,
-    "temp_change": 0.162
-  },
-  "on": {
+  "delay": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "cool": {
-    "energy_factor": 1.146,
-    "temp_change": -0.116
-  },
-  "scheduled": {
+  "quick": {
     "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "charge": {
+    "energy_factor": 1.275,
     "temp_change": 0.0
   },
   "sleep": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "dim": {
-    "energy_factor": 0.777,
+  "performance": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "warm": {
+    "energy_factor": 1.432,
+    "temp_change": 0.166
+  },
+  "off": {
+    "energy_factor": 0.086,
+    "temp_change": 0.0
+  },
+  "turn": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "power": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "scheduled": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "medium": {
+    "energy_factor": 1.026,
+    "temp_change": 0.083
+  },
+  "mode": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "start": {
+    "energy_factor": 1.0,
     "temp_change": 0.0
   },
   "low": {
-    "energy_factor": 0.847,
-    "temp_change": -0.281
+    "energy_factor": 0.787,
+    "temp_change": -0.192
   },
-  "off": {
-    "energy_factor": 0.048,
+  "timer": {
+    "energy_factor": 1.0,
     "temp_change": 0.0
+  },
+  "night": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "on": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "eco": {
+    "energy_factor": 0.706,
+    "temp_change": -0.098
+  },
+  "save": {
+    "energy_factor": 0.645,
+    "temp_change": -0.057
+  },
+  "cool": {
+    "energy_factor": 1.297,
+    "temp_change": -0.166
   }
 }

@@ -6,6 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from pathlib import Path
 
+from starlette.staticfiles import StaticFiles
+
 # === Import project modules ===
 from device_manager import DeviceManager
 from home_manager import HomeManager
@@ -42,7 +44,7 @@ def init_system():
     return {
         "message": "System initialized successfully",
         "devices_count": len(devices.get_all_devices()),
-        "homes": homes.homes
+        "homes_count": len(homes.homes)
     }
 
 
@@ -126,7 +128,7 @@ def get_weather():
 @app.post("/api/train")
 def train_agent(home: str = Body(...), episodes: int = Body(30)):
     model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
-    result = train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
+    train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
     return {
         "message": f"Training complete for home '{home}'",
         "episodes": episodes,
@@ -228,3 +230,6 @@ def get_full_kpi_log():
     if not kpi_path.exists():
         return {"error": "No KPI file found."}
     return pd.read_csv(kpi_path).to_dict(orient="records")
+
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
