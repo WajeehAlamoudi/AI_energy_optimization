@@ -1,0 +1,502 @@
+{
+  "home": "Default",
+  "last_update": "2025-10-25T23:32:43.564769",
+  "total_reward": -297.0842015263884,
+  "total_energy": 21.959573999999993,
+  "steps": [
+    {
+      "timestamp": "2025-10-25T23:07:43.412084",
+      "home": "Default",
+      "step": 1,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 25.05,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 0.845,
+      "reward": -6.174,
+      "total_reward": -6.174,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 3.055,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:08:43.416852",
+      "home": "Default",
+      "step": 2,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 25.39,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 1.689,
+      "reward": -6.78,
+      "total_reward": -12.954,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 3.391,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:09:43.421666",
+      "home": "Default",
+      "step": 3,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 25.71,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 2.534,
+      "reward": -7.355,
+      "total_reward": -20.309,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 3.711,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:10:43.428181",
+      "home": "Default",
+      "step": 4,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 26.01,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 3.378,
+      "reward": -7.902,
+      "total_reward": -28.212,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 4.015,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:11:43.431279",
+      "home": "Default",
+      "step": 5,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 26.3,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 4.223,
+      "reward": -8.422,
+      "total_reward": -36.633,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 4.303,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:12:43.439437",
+      "home": "Default",
+      "step": 6,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 26.58,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 5.068,
+      "reward": -8.915,
+      "total_reward": -45.548,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 4.577,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:13:43.447878",
+      "home": "Default",
+      "step": 7,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 26.84,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 5.912,
+      "reward": -9.384,
+      "total_reward": -54.932,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 4.838,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:14:43.455290",
+      "home": "Default",
+      "step": 8,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 27.09,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 6.757,
+      "reward": -9.829,
+      "total_reward": -64.761,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 5.085,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:15:43.462077",
+      "home": "Default",
+      "step": 9,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 27.32,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 7.601,
+      "reward": -10.252,
+      "total_reward": -75.014,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 5.32,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:16:43.468933",
+      "home": "Default",
+      "step": 10,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 27.54,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 8.446,
+      "reward": -10.654,
+      "total_reward": -85.668,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 5.544,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:17:43.474662",
+      "home": "Default",
+      "step": 11,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 27.76,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 9.291,
+      "reward": -11.036,
+      "total_reward": -96.704,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 5.756,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:18:43.482094",
+      "home": "Default",
+      "step": 12,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 27.96,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 10.135,
+      "reward": -11.399,
+      "total_reward": -108.102,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 5.957,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:19:43.489743",
+      "home": "Default",
+      "step": 13,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.15,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 10.98,
+      "reward": -11.743,
+      "total_reward": -119.846,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.149,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:20:43.496131",
+      "home": "Default",
+      "step": 14,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.33,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 11.824,
+      "reward": -12.071,
+      "total_reward": -131.916,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.331,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:21:43.504153",
+      "home": "Default",
+      "step": 15,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.5,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 12.669,
+      "reward": -12.382,
+      "total_reward": -144.298,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.503,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:22:43.510646",
+      "home": "Default",
+      "step": 16,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.67,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 13.514,
+      "reward": -12.677,
+      "total_reward": -156.975,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.667,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:23:43.518137",
+      "home": "Default",
+      "step": 17,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.82,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 14.358,
+      "reward": -12.958,
+      "total_reward": -169.933,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.823,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:24:43.528621",
+      "home": "Default",
+      "step": 18,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 28.97,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 15.203,
+      "reward": -13.224,
+      "total_reward": -183.157,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 6.972,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:25:43.535305",
+      "home": "Default",
+      "step": 19,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.11,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 16.047,
+      "reward": -13.478,
+      "total_reward": -196.635,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.112,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:26:43.545640",
+      "home": "Default",
+      "step": 20,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.25,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 16.892,
+      "reward": -13.718,
+      "total_reward": -210.354,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.246,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:27:43.549353",
+      "home": "Default",
+      "step": 21,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.37,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 17.737,
+      "reward": -13.947,
+      "total_reward": -224.301,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.373,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:28:43.552833",
+      "home": "Default",
+      "step": 22,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.49,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 18.581,
+      "reward": -14.164,
+      "total_reward": -238.465,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.494,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:29:43.555812",
+      "home": "Default",
+      "step": 23,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.61,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 19.426,
+      "reward": -14.371,
+      "total_reward": -252.835,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.608,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:30:43.558911",
+      "home": "Default",
+      "step": 24,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.72,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 20.27,
+      "reward": -14.567,
+      "total_reward": -267.402,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.717,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:31:43.561843",
+      "home": "Default",
+      "step": 25,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.82,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 21.115,
+      "reward": -14.753,
+      "total_reward": -282.155,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.821,
+      "model": "default_final.pth"
+    },
+    {
+      "timestamp": "2025-10-25T23:32:43.564769",
+      "home": "Default",
+      "step": 26,
+      "device": "Lights",
+      "action": "dim_low",
+      "indoor_temp": 29.92,
+      "outdoor_temp": 31.79,
+      "energy_used": 0.845,
+      "total_energy": 21.96,
+      "reward": -14.93,
+      "total_reward": -297.084,
+      "comfort_range": [
+        20,
+        24
+      ],
+      "comfort_violation": 7.919,
+      "model": "default_final.pth"
+    }
+  ]
+}
