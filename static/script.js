@@ -119,12 +119,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to update dashboard with system data
     function updateDashboard() {
+        console.log("Updating dashboard with data:", systemData);
+
         // Update homes and devices count if elements exist
         if (devicesCountElement) {
+            console.log("Updating devices count to:", systemData.devices_count);
             devicesCountElement.textContent = systemData.devices_count;
         }
 
         if (homesCountElement) {
+            console.log("Updating homes count to:", systemData.homes_count || Object.keys(systemData.homes).length);
             homesCountElement.textContent = systemData.homes_count || Object.keys(systemData.homes).length;
         }
     }
