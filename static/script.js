@@ -23,12 +23,18 @@ function countAllDevices(homes) {
 // Helper function to simulate API call
 // Real API call function
 function apiCall(endpoint) {
+    console.log("Making API call to:", endpoint);
     return fetch(endpoint)
         .then(response => {
+            console.log("API response received:", response);
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok: ' + response.status);
             }
             return response.json();
+        })
+        .then(data => {
+            console.log("API data:", data);
+            return data;
         });
 }
 
@@ -136,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add click event listener to the welcome button
     welcomeButton.addEventListener('click', async function() {
         // Show loader
+        systemData.initialized = false;
         initLoader.style.display = 'block';
         welcomeButton.style.display = 'none';
 
