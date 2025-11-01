@@ -36,7 +36,7 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
 
     print("=== 🤖 INITIALIZING AGENT ===")
     agent = RLAgent(state_size=state_size, action_size=action_size)
-    agent.load_model(MODELS_DIR / "checkpoints/final_agent_model.pth")
+    agent.load_model(MODELS_DIR / f"checkpoints/{HOME_NAME.lower()}_final.pth")
 
     tracker = TrainingKPI(home_name=HOME_NAME)
     print("📊 KPI Logger ready.\n")

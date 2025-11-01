@@ -23,5 +23,30 @@
         ]
       }
     }
+  },
+  "Wajeeh": {
+    "comfort_range": [20, 24],
+    "rooms": {
+      "Living Room": {
+        "devices": [
+          "Air Conditioning",
+          "Tv"
+        ]
+      },
+      "Bedroom": {
+        "devices": [
+          "Heater",
+          "Lights",
+          "Computer"
+        ]
+      },
+      "Kitchen": {
+        "devices": [
+          "Fridge",
+          "Oven",
+          "Dishwasher"
+        ]
+      }
+    }
   }
 }

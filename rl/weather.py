@@ -28,9 +28,6 @@ def get_user_location():
         return {"city": "Istanbul", "country": "TR", "lat": 41.0082, "lon": 28.9784}
 
 
-
-
-
 def get_real_outdoor_temp(lat, lon):
     """Fetch real outdoor temperature using Open-Meteo (no API key required)."""
     try:

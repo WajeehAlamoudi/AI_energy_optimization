@@ -46,15 +46,10 @@ class SmartHomeEnv:
             self.devices = self.manager.get_all_devices()
             self.comfort_min, self.comfort_max = comfort_range
 
+        self._out_temp()
+
         # --- Initialize dynamic variables ---
         self.indoor_temp = random.uniform(20, 26)
-
-        if self.mode == "real":
-            self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
-            print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
-        else:
-            self.outdoor_temp = random.uniform(10, 40)
-            print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
 
         self.total_kWh = 0.0
         self.step_count = 0
@@ -73,6 +68,14 @@ class SmartHomeEnv:
         self.action_space = self._build_action_space()
         self.state_size = 2  # indoor_temp, total_kWh
 
+    def _out_temp(self):
+        if self.mode == "real":
+            self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
+            print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
+        else:
+            self.outdoor_temp = random.uniform(10, 40)
+            print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
+    #TODO: functions for lstm input to match real data
     def _build_action_space(self):
         actions = []
         for device, info in self.devices.items():
@@ -130,7 +133,7 @@ class SmartHomeEnv:
         # Dynamic weighting (optional — scales penalty by energy intensity)
         energy_weight = 0.8 if energy_used < 3.0 else 1.0
         # Final reward: lower energy and closer-to-comfort → higher reward
-        reward = -(energy_used * energy_weight + comfort_penalty * 1.8) + comfort_reward
+        reward = -(energy_used * energy_weight + comfort_penalty * 1.90) + comfort_reward
 
         done = self.step_count >= 24  # one simulated day
         next_state = np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)

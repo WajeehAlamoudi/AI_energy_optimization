@@ -203,7 +203,7 @@ def live_data(home: str = "Default"):
     path = LOGS_DIR / home / f"{home.lower().replace(' ', '_')}_live_log.json"
     if path.exists():
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return json.load(f)["step"[-1]]
     return {"status": "no_data"}
 
 
