@@ -22,7 +22,7 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
     env = SmartHomeEnv(home_name=HOME_NAME)
     action_size = len(env.action_space)
 
-    lstm_path = MODELS_DIR / "lstm_model.pth"
+    lstm_path = MODELS_DIR / "multioutput_xgb_model.pkl"
     lstm = None
     if lstm_path.exists():
         print(f"✅ Found LSTM model at: {lstm_path}")
