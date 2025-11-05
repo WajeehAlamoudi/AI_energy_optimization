@@ -31,7 +31,7 @@ class SmartHomeEnv:
         self.manager = DeviceManager()
         self.mode = mode
 
-        # --- Load device context ---
+        # specific for new home or falls into default values min in-temp, max in-temp, set self.indoor_temp range
         if self.home_name and self.home_name in self.home_manager.homes:
             print(f"🏠 Loading environment for home: {self.home_name}")
             self.devices = {
@@ -45,11 +45,11 @@ class SmartHomeEnv:
             print("⚙️ No specific home provided. Using global device catalog.")
             self.devices = self.manager.get_all_devices()
             self.comfort_min, self.comfort_max = comfort_range
-
-        self._out_temp()
-
-        # --- Initialize dynamic variables ---
+        # specific function IOT for receiving temp from device or default
         self.indoor_temp = random.uniform(20, 26)
+
+        # real outside time for a given location, it set self.outdoor_temp
+        self._out_temp()
 
         self.total_kWh = 0.0
         self.step_count = 0
@@ -66,7 +66,7 @@ class SmartHomeEnv:
             self.rules = json.load(f)
 
         self.action_space = self._build_action_space()
-        self.state_size = 2  # indoor_temp, total_kWh
+        self.state_size = 2  # indoor_temp, total_kWh = what the RL model will predict on, default = 2
 
     def _out_temp(self):
         if self.mode == "real":
@@ -75,7 +75,12 @@ class SmartHomeEnv:
         else:
             self.outdoor_temp = random.uniform(10, 40)
             print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
-    #TODO: functions for lstm input to match real data
+
+    def _indoor_temp(self):
+        pass
+
+    #TODO: functions will read from real sensors
+
     def _build_action_space(self):
         actions = []
         for device, info in self.devices.items():
