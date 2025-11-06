@@ -7,7 +7,7 @@ from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
 from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage
-
+# hassa aws suliman
 
 class SmartHomeEnv:
 
