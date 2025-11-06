@@ -7,11 +7,11 @@ from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
 from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage
-# hassa aws suliman
+
 
 class SmartHomeEnv:
 
-    def __init__(self, home_name=None, mode="real", comfort_range=(21, 25)):
+    def __init__(self, home_name=None, mode="real", comfort_range=(20, 27)):
 
         self.outdoor_temp = None
         self.indoor_temp = None
@@ -63,6 +63,10 @@ class SmartHomeEnv:
 
         self.action_space = self._build_action_space()
         self.state_size = 2  # indoor_temp, total_kWh = what the RL model will predict on, default = 2
+
+    def _is_weekend(self):
+        # get_if_weekend() from rl/rl_utils.py
+        pass
 
     def _out_temp(self):
         if self.mode == "real":

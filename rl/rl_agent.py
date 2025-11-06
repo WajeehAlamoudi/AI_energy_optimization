@@ -8,7 +8,7 @@ import numpy as np
 from collections import deque
 from paths import MODELS_DIR
 
-
+# DEEP Q-STATE Nural Network
 class DQN(nn.Module):
     def __init__(self, state_size, action_size):
         super().__init__()

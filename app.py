@@ -176,7 +176,6 @@ def activate_optimizer(home: str = "Default", interval_sec: int = 3600):
     Start the live RL optimizer for a specific home.
     Runs asynchronously in a background thread.
     """
-
     def background_run():
         try:
             run_live_agent(home_name=home, interval_sec=interval_sec, continuous=True)

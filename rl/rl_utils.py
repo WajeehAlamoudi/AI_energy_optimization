@@ -52,3 +52,6 @@ def get_real_energy_usage():
     """Simulate energy sensor not connected — raises error."""
     raise ConnectionError("Energy meter not available")
 
+
+def get_if_weekend():
+    pass

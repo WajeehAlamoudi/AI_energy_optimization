@@ -1,6 +1,6 @@
 {
   "Default": {
-    "comfort_range": [20, 24],
+    "comfort_range": [22, 24],
     "rooms": {
       "Living Room": {
         "devices": [

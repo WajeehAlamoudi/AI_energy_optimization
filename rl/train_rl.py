@@ -24,6 +24,7 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
 
     lstm_path = MODELS_DIR / "multioutput_xgb_model.pkl"
     lstm = None
+
     if lstm_path.exists():
         print(f"✅ Found LSTM model at: {lstm_path}")
         lstm = LSTMPredictor(model_path=lstm_path)
@@ -35,6 +36,7 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
     print(f"Environment ready → {action_size} actions, state size {state_size}")
 
     print("=== 🤖 INITIALIZING AGENT ===")
+
     agent = RLAgent(state_size=state_size, action_size=action_size)
     agent.load_model(MODELS_DIR / f"checkpoints/{HOME_NAME.lower()}_final.pth")
 
@@ -53,7 +55,9 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
         for step in range(MAX_STEPS_PER_EPISODE):
             if lstm:
                 # 1️⃣ Prepare input for LSTM (features)
-                lstm_input = []
+
+                # lstm_input = [env.indoor_temp, env.outdoor_temp, ......]
+
                 # LSTM predicts the next indoor temperature and kWh
                 predicted_kWh, predicted_temp = lstm.predict(lstm_input)
 
