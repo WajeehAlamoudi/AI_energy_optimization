@@ -41,3 +41,14 @@ def get_real_outdoor_temp(lat, lon):
     except Exception as e:
         print(f"⚠️ Weather API failed: {e}")
         return random.uniform(20, 35)
+
+
+def get_real_indoor_temp():
+    """Simulate sensor not connected — raises error."""
+    raise ConnectionError("Indoor temperature sensor not available")
+
+
+def get_real_energy_usage():
+    """Simulate energy sensor not connected — raises error."""
+    raise ConnectionError("Energy meter not available")
+

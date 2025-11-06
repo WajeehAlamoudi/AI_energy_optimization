@@ -16,7 +16,7 @@ from main import run_live_agent
 from rl.train_rl import train_rl_agent
 from rl.rl_environment import SmartHomeEnv
 from rl.rl_agent import RLAgent
-from rl.weather import get_user_location, get_real_outdoor_temp
+from rl.rl_utils import get_user_location, get_real_outdoor_temp
 from training_kpi_logger import TrainingKPI
 from lstm_predictor import LSTMPredictor
 from paths import DATA_DIR, LOGS_DIR, MODELS_DIR

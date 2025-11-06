@@ -6,20 +6,17 @@ import numpy as np
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
-from rl.weather import get_user_location, get_real_outdoor_temp
+from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage
 
 
 class SmartHomeEnv:
-    # to be set by the user comfort_range
-    # given indoor_temp
-    # given outdoor_temp
+
     def __init__(self, home_name=None, mode="real", comfort_range=(21, 25)):
-        """
-        Smart Home Environment
-        If home_name is provided, it will load devices and comfort range
-        from HomeManager (per-home configuration).
-        Otherwise, it uses the global device catalog.
-        """
+
+        self.outdoor_temp = None
+        self.indoor_temp = None
+        self.total_kWh = None
+
         loc = get_user_location()
         self.city = loc["city"]
         self.lat = loc["lat"]
@@ -45,13 +42,12 @@ class SmartHomeEnv:
             print("⚙️ No specific home provided. Using global device catalog.")
             self.devices = self.manager.get_all_devices()
             self.comfort_min, self.comfort_max = comfort_range
-        # specific function IOT for receiving temp from device or default
-        self.indoor_temp = random.uniform(20, 26)
 
-        # real outside time for a given location, it set self.outdoor_temp
+        # here can get any real data from sensors
         self._out_temp()
+        self._indoor_temp()
+        self._real_kWh()
 
-        self.total_kWh = 0.0
         self.step_count = 0
 
         # --- Load or create impact map ---
@@ -77,9 +73,31 @@ class SmartHomeEnv:
             print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
 
     def _indoor_temp(self):
-        pass
+        if self.mode == "real":
+            # Example: call a sensor API or GPIO reader
+            try:
+                self.indoor_temp = get_real_indoor_temp()
+                print(f"🏡 Real indoor temp: {self.indoor_temp:.1f}°C")
+            except Exception as e:
+                print(f"⚠️ Sensor error: {e}, fallback to last known value.")
+                self.indoor_temp = getattr(self, "indoor_temp", np.mean([self.comfort_min, self.comfort_max]))
+        else:
+            self.indoor_temp = random.uniform(self.comfort_min, self.comfort_max)
 
-    #TODO: functions will read from real sensors
+    def _real_kWh(self):
+        """
+        Retrieve real-time total energy consumption (kWh)
+        from a smart plug, energy meter, or home gateway.
+        """
+        if self.mode == "real":
+            try:
+                self.total_kWh = get_real_energy_usage()
+                print(f"⚡ Real energy usage: {self.total_kWh:.3f} kWh")
+            except Exception as e:
+                print(f"⚠️ Energy sensor error: {e}, fallback to last known value.")
+                self.total_kWh = getattr(self, "total_kWh", 0.0)
+        else:
+            self.total_kWh = 0.0
 
     def _build_action_space(self):
         actions = []
@@ -89,10 +107,16 @@ class SmartHomeEnv:
         return actions
 
     def reset(self):
-        """Reset environment to new random state"""
-        self.indoor_temp = random.uniform(20, 26)
-        self.outdoor_temp = random.uniform(10, 40)
-        self.total_kWh = 0.0
+        print("🔄 Resetting environment...")
+        if self.mode == "real":
+            self._out_temp()
+            self._indoor_temp()
+            self._real_kWh()
+        else:
+            self.indoor_temp = random.uniform(20, 26)
+            self.outdoor_temp = random.uniform(10, 40)
+            self.total_kWh = 0.0
+
         self.step_count = 0
         return np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)
 
