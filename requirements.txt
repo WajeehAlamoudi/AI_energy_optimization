@@ -1,0 +1,20 @@
+# Web Framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+starlette>=0.27.0
+
+# Data Processing
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Machine Learning
+torch>=2.1.0
+
+# HTTP Requests
+requests>=2.31.0
+
+# CLI Progress
+tqdm>=4.66.0
+
+# Plotting (optional, for training visualizations)
+matplotlib>=3.8.0
