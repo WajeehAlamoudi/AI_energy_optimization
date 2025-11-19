@@ -135,5 +135,6 @@ Thumbs.db
 
 # Project specific
 logs/
+data/impact_map.json
 *.pth
 *.h5
