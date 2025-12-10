@@ -63,8 +63,11 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
 
                 # Combine current & forecasted values
                 state_input = np.array([
+
                     env.indoor_temp,  # current indoor temp
                     env.total_kWh,  # current energy used so far
+
+
                     predicted_temp,  # next predicted indoor temp
                     predicted_kWh  # next predicted kWh
                 ], dtype=np.float32)
