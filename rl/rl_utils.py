@@ -40,7 +40,7 @@ def get_real_outdoor_temp(lat, lon):
         return data["current"]["temperature_2m"]
     except Exception as e:
         print(f"⚠️ Weather API failed: {e}")
-        return random.uniform(20, 35)
+        raise
 
 
 def get_real_indoor_temp():

@@ -16,6 +16,7 @@ class SmartHomeEnv:
         self.outdoor_temp = None
         self.indoor_temp = None
         self.total_kWh = None
+        self.is_weekend = None
 
         loc = get_user_location()
         self.city = loc["city"]
@@ -47,6 +48,7 @@ class SmartHomeEnv:
         self._out_temp()
         self._indoor_temp()
         self._real_kWh()
+        self._is_weekend()
 
         self.step_count = 0
 
@@ -70,11 +72,15 @@ class SmartHomeEnv:
 
     def _out_temp(self):
         if self.mode == "real":
-            self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
-            print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
+            try:
+                self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
+                print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
+            except Exception as e:
+                print(f"⚠️ Sensor error: {e}, fallback to last known value.")
+                self.outdoor_temp = random.uniform(10, 40)
+
         else:
             self.outdoor_temp = random.uniform(10, 40)
-            print(f"🌡️ Using simulated outdoor temp: {self.outdoor_temp:.1f}°C")
 
     def _indoor_temp(self):
         if self.mode == "real":
@@ -89,10 +95,7 @@ class SmartHomeEnv:
             self.indoor_temp = random.uniform(self.comfort_min, self.comfort_max)
 
     def _real_kWh(self):
-        """
-        Retrieve real-time total energy consumption (kWh)
-        from a smart plug, energy meter, or home gateway.
-        """
+
         if self.mode == "real":
             try:
                 self.total_kWh = get_real_energy_usage()
@@ -112,14 +115,10 @@ class SmartHomeEnv:
 
     def reset(self):
         print("🔄 Resetting environment...")
-        if self.mode == "real":
-            self._out_temp()
-            self._indoor_temp()
-            self._real_kWh()
-        else:
-            self.indoor_temp = random.uniform(20, 26)
-            self.outdoor_temp = random.uniform(10, 40)
-            self.total_kWh = 0.0
+        self._out_temp()
+        self._indoor_temp()
+        self._real_kWh()
+        self._is_weekend()
 
         self.step_count = 0
         return np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)

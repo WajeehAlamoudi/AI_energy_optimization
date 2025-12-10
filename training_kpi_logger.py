@@ -63,10 +63,8 @@ class TrainingKPI:
         if save:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             png_path = self.plots_dir / f"{self.home_name}_kpi_{timestamp}.png"
-            pdf_path = self.plots_dir / f"{self.home_name}_kpi_{timestamp}.pdf"
             plt.savefig(png_path)
-            plt.savefig(pdf_path)
-            print(f"📊 KPI plot saved → {png_path.name}, {pdf_path.name}")
+            print(f"📊 KPI plot saved → {png_path.name}")
 
         if show:
             plt.show()
