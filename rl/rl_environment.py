@@ -6,7 +6,8 @@ import numpy as np
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
-from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage
+from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage, \
+    get_if_weekend
 
 
 class SmartHomeEnv:
@@ -67,8 +68,10 @@ class SmartHomeEnv:
         self.state_size = 2  # indoor_temp, total_kWh = what the RL model will predict on, default = 2
 
     def _is_weekend(self):
-        # get_if_weekend() from rl/rl_utils.py
-        pass
+        if self.mode == "real":
+            self.is_weekend = get_if_weekend()
+        else:
+            self.is_weekend = random.random() < (2 / 7)
 
     def _out_temp(self):
         if self.mode == "real":

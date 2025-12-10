@@ -1,4 +1,4 @@
-import random
+from datetime import date
 
 import requests
 
@@ -54,4 +54,35 @@ def get_real_energy_usage():
 
 
 def get_if_weekend():
-    pass
+
+    NINJAS_KEY="Uroj2S9uJqDd9GWjr8XD8A==Ms2aycJifwN6JYIj"
+    if not NINJAS_KEY:
+        raise RuntimeError("API_NINJAS_KEY not set")
+
+    try:
+        loc = get_user_location()
+        country = loc.get("country", "TR")
+
+        today = date.today().isoformat()
+
+        url = "https://api.api-ninjas.com/v1/isworkingday"
+        params = {
+            "country": country,
+            "date": today
+        }
+
+        headers = {
+            "X-Api-Key": NINJAS_KEY
+        }
+
+        r = requests.get(url, headers=headers, params=params, timeout=5)
+        r.raise_for_status()
+
+        data = r.json()
+
+        # is_workday == False → weekend OR public holiday
+        return not data.get("is_workday", True)
+
+    except Exception as e:
+        print(f"⚠️ isworkingday API failed: {e}")
+        return False
