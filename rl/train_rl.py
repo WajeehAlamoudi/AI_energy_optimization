@@ -23,14 +23,13 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
     action_size = len(env.action_space)
 
     lstm_path = MODELS_DIR / "multioutput_xgb_model.pkl"
-    lstm = None
-
     if lstm_path.exists():
         print(f"✅ Found LSTM model at: {lstm_path}")
         lstm = LSTMPredictor(model_path=lstm_path)
         state_size = 4  # [current_temp, total_kWh, predicted_temp, predicted_kWh]
     else:
         print("⚠️ No LSTM model found. Using simulated state only.")
+        lstm = None
         state_size = env.state_size  # fallback: 2 features
 
     print(f"Environment ready → {action_size} actions, state size {state_size}")

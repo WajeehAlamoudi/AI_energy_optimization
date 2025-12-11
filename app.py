@@ -128,43 +128,58 @@ def get_weather():
 # === 🤖 TRAINING ===
 @app.post("/api/train")
 def train_agent(home: str = Body(...), episodes: int = Body(30)):
-    model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
-    train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
-    return {
-        "message": f"Training complete for home '{home}'",
-        "episodes": episodes,
-        "model_path": str(model_path)
-    }
+    # MODIFIED: Added try-catch wrapper to prevent server crashes
+    # Returns structured error response instead of raising exceptions
+    # This allows frontend to display training errors gracefully
+    try:
+        model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
+        train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
+        return {
+            "message": f"Training complete for home '{home}'",
+            "episodes": episodes,
+            "model_path": str(model_path)
+        }
+    except Exception as e:
+        return {
+            "error": f"Training failed: {str(e)}",
+            "home": home
+        }
 
 
 # === ☀️ SIMULATION ===
 @app.post("/api/simulate/day")
-def simulate_day(home: str = Body(...)):
-    env = SmartHomeEnv(home_name=home)
-    model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
-    agent = RLAgent(state_size=env.state_size, action_size=len(env.action_space))
+def simulate_day(home: str = Body(..., embed=True)):
+    try:
+        env = SmartHomeEnv(home_name=home)
+        model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
+        agent = RLAgent(state_size=env.state_size, action_size=len(env.action_space))
 
-    agent.load_model(model_path)
-    agent.epsilon = 0.0
+        agent.load_model(model_path)
+        agent.epsilon = 0.0
 
-    total_reward, total_energy, temps = 0, 0, []
-    state = env.reset()
-    for hour in range(24):
-        action_idx = agent.act(state)
-        next_state, reward, done, info = env.step(action_idx)
-        total_reward += reward
-        total_energy += info["energy_used"]
-        temps.append(info["indoor_temp"])
-        state = next_state
-        if done:
-            break
+        total_reward, total_energy, temps = 0, 0, []
+        state = env.reset()
+        for hour in range(24):
+            action_idx = agent.act(state)
+            next_state, reward, done, info = env.step(action_idx)
+            total_reward += reward
+            total_energy += info["energy_used"]
+            temps.append(info["indoor_temp"])
+            state = next_state
+            if done:
+                break
 
-    return {
-        "total_reward": total_reward,
-        "total_energy_kWh": total_energy,
-        "avg_temp": sum(temps) / len(temps),
-        "comfort_range": [env.comfort_min, env.comfort_max]
-    }
+        return {
+            "total_reward": total_reward,
+            "total_energy_kWh": total_energy,
+            "avg_temp": sum(temps) / len(temps),
+            "comfort_range": [env.comfort_min, env.comfort_max]
+        }
+    except Exception as e:
+        return {
+            "error": f"Simulation failed: {str(e)}",
+            "home": home
+        }
 
 
 running_threads = {}

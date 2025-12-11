@@ -3,325 +3,744 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Energy Optimization System</title>
+    <title>Aura Energy • AI Smart Home Optimization</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="ambient-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grain-overlay"></div>
+    </div>
+
     <!-- Welcome Screen -->
-    <div id="welcome-screen">
-        <div class="stars-container">
-            <div id="stars"></div>
-            <div id="stars2"></div>
-            <div id="stars3"></div>
-        </div>
-        <div class="welcome-container">
-            <h1>AI Energy Optimization System</h1>
-            <p class="welcome-subtitle">Advanced energy management for smart homes</p>
-            <div class="system-status">System status: <span id="system-status">Standby</span></div>
-            <button id="welcome-button">Welcome <span id="username">User</span></button>
-            <div id="init-loader" class="init-loader">
-                <div class="loader-spinner"></div>
-                <div id="init-status">Initializing system...</div>
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-content">
+            <div class="logo-container">
+                <svg class="logo-icon" viewBox="0 0 100 100">
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF6B35"/>
+                            <stop offset="50%" style="stop-color:#F7C59F"/>
+                            <stop offset="100%" style="stop-color:#EFEFD0"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="25" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.7"/>
+                    <circle cx="50" cy="50" r="8" fill="url(#logoGrad)"/>
+                </svg>
+                <div class="logo-pulse"></div>
+            </div>
+            <h1 class="welcome-title">Aura Energy</h1>
+            <p class="welcome-subtitle">Intelligent Home Optimization</p>
+            <div class="welcome-stats">
+                <div class="stat-pill">
+                    <span class="stat-value" id="init-homes">--</span>
+                    <span class="stat-label">Homes</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-value" id="init-devices">--</span>
+                    <span class="stat-label">Devices</span>
+                </div>
+            </div>
+            <button class="enter-btn" id="enter-app">
+                <span>Enter Dashboard</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <div class="loading-bar" id="loading-bar">
+                <div class="loading-progress"></div>
             </div>
         </div>
     </div>
 
     <!-- Main Dashboard -->
-    <div id="main-dashboard" style="display: none;">
-        <!-- Header Section -->
-        <header>
-            <div class="header-left">
-                <h1 id="home-name">Home Name</h1>
+    <div id="dashboard" class="screen">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <svg class="nav-logo" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="8" fill="currentColor"/>
+                    <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                </svg>
+                <span>Aura</span>
             </div>
-            <div class="header-center">
-                <h2>AI Energy Optimization</h2>
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-view="overview">Overview</button>
+                <button class="nav-tab" data-view="homes">Homes</button>
+                <button class="nav-tab" data-view="devices">Devices</button>
+                <button class="nav-tab" data-view="training">AI Training</button>
+                <button class="nav-tab" data-view="analytics">Analytics</button>
             </div>
-            <div class="header-right">
-                <div class="weather-container">
-                    <span id="weather-icon">☀️</span>
-                    <span id="weather-temp">75°F</span>
-                </div>
-                <div class="date-container">
-                    <span id="current-date">October 31, 2025</span>
+            <div class="nav-right">
+                <div class="weather-badge" id="weather-badge">
+                    <span class="weather-icon">☀️</span>
+                    <span class="weather-temp">--°C</span>
+                    <span class="weather-city">Loading...</span>
                 </div>
             </div>
-        </header>
+        </nav>
 
-        <!-- Savings Dashboard Container -->
-        <section class="savings-dashboard">
-            <div class="savings-container">
-                <h3 class="savings-title">Energy Optimization Dashboard</h3>
-
-                <!-- System Overview -->
-                <div class="system-overview">
-                    <div class="overview-item">
-                        <div class="overview-icon">🏠</div>
-                        <div class="overview-value"><span id="homes-count">...</span></div>
-                        <div class="overview-label">Homes</div>
-                    </div>
-                    <div class="overview-item">
-                        <div class="overview-icon">🔌</div>
-                        <div class="overview-value"><span id="devices-count">...</span></div>
-                        <div class="overview-label">Devices</div>
-                    </div>
-                </div>
-
-                <!-- Savings Summary Section -->
-                <div class="savings-summary">
-                    <div class="savings-box">
-                        <h3>Energy Saved</h3>
-                        <div class="savings-value">
-                            <span id="kwh-saved">250</span>
-                            <span class="unit">KWH</span>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Overview View -->
+            <div id="view-overview" class="view active">
+                <div class="overview-grid">
+                    <!-- Energy Hero Card -->
+                    <div class="card hero-card">
+                        <div class="hero-content">
+                            <div class="hero-text">
+                                <span class="hero-label">Today's Energy</span>
+                                <h2 class="hero-value"><span id="today-energy">0.00</span> <span class="unit">kWh</span></h2>
+                                <p class="hero-comparison">
+                                    <span class="trend-badge positive" id="energy-trend">↓ 12% vs yesterday</span>
+                                </p>
+                            </div>
+                            <div class="hero-chart" id="mini-chart">
+                                <svg viewBox="0 0 200 80" class="sparkline">
+                                    <defs>
+                                        <linearGradient id="sparkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:0.3"/>
+                                            <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:0"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path class="sparkline-area" d="M0,60 Q25,45 50,50 T100,35 T150,45 T200,30 V80 H0 Z" fill="url(#sparkGrad)"/>
+                                    <path class="sparkline-line" d="M0,60 Q25,45 50,50 T100,35 T150,45 T200,30" fill="none" stroke="#FF6B35" stroke-width="2"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="hero-actions">
+                            <button class="action-btn primary" id="activate-optimizer">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                Activate Optimizer
+                            </button>
+                            <button class="action-btn secondary" id="simulate-day">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                Simulate Day
+                            </button>
                         </div>
                     </div>
-                    <div class="savings-box">
-                        <h3>Money Saved</h3>
-                        <div class="savings-value">
-                            <span id="money-saved">$45</span>
-                            <span class="unit">USD</span>
+
+                    <!-- Quick Stats -->
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="--accent: #FF6B35;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stat-homes">0</span>
+                            <span class="stat-title">Active Homes</span>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="--accent: #2EC4B6;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+                                <rect x="9" y="9" width="6" height="6"/>
+                                <line x1="9" y1="1" x2="9" y2="4"/>
+                                <line x1="15" y1="1" x2="15" y2="4"/>
+                                <line x1="9" y1="20" x2="9" y2="23"/>
+                                <line x1="15" y1="20" x2="15" y2="23"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stat-devices">0</span>
+                            <span class="stat-title">Device Types</span>
+                        </div>
+                    </div>
+
+                    <div class="card stat-card">
+                        <div class="stat-icon" style="--accent: #E71D36;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="stat-trained">0</span>
+                            <span class="stat-title">Models Trained</span>
+                        </div>
+                    </div>
+
+                    <!-- Comfort Zone Card -->
+                    <div class="card comfort-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+                            </svg>
+                            Comfort Zone
+                        </h3>
+                        <div class="comfort-display">
+                            <div class="temp-gauge">
+                                <svg viewBox="0 0 200 120" class="gauge-svg">
+                                    <defs>
+                                        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#3B82F6"/>
+                                            <stop offset="50%" style="stop-color:#10B981"/>
+                                            <stop offset="100%" style="stop-color:#EF4444"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="16" stroke-linecap="round"/>
+                                    <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="100" id="gauge-fill"/>
+                                </svg>
+                                <div class="temp-value">
+                                    <span id="current-temp">23</span>°C
+                                </div>
+                            </div>
+                            <div class="comfort-range">
+                                <span class="range-label">Target Range</span>
+                                <span class="range-value" id="comfort-range">21°C - 25°C</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card activity-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                            </svg>
+                            AI Activity Log
+                        </h3>
+                        <div class="activity-list" id="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-dot"></div>
+                                <div class="activity-content">
+                                    <span class="activity-text">System ready</span>
+                                    <span class="activity-time">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Home Selector -->
+                    <div class="card home-selector-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                            </svg>
+                            Active Home
+                        </h3>
+                        <select id="active-home-select" class="home-select">
+                            <!-- Dynamic options -->
+                        </select>
+                        <div class="home-quick-stats" id="home-quick-stats">
+                            <div class="quick-stat">
+                                <span class="qs-value" id="qs-rooms">0</span>
+                                <span class="qs-label">Rooms</span>
+                            </div>
+                            <div class="quick-stat">
+                                <span class="qs-value" id="qs-devices">0</span>
+                                <span class="qs-label">Devices</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Optimization Status -->
-                <div class="optimization-status">
-                    <div class="status-indicator active">
-                        <span class="status-dot"></span>
-                        <span class="status-text">Optimization Active</span>
+            <!-- Homes View -->
+            <div id="view-homes" class="view">
+                <div class="view-header">
+                    <div class="view-title-area">
+                        <h2 class="view-title">Your Homes</h2>
+                        <p class="view-subtitle">Manage your smart home configurations</p>
                     </div>
-                    <button id="start-optimization" class="optimization-button">Start Home Optimization</button>
+                    <button class="add-btn" id="add-home-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Home
+                    </button>
+                </div>
+                <div class="homes-grid" id="homes-grid">
+                    <!-- Dynamic home cards -->
                 </div>
             </div>
-        </section>
 
-        <!-- Main Navigation Grid -->
-        <section class="navigation-grid">
-            <div class="nav-item" id="manage-homes">
-                <div class="nav-icon">🏠</div>
-                <h3>Manage Homes</h3>
+            <!-- Devices View -->
+            <div id="view-devices" class="view">
+                <div class="view-header">
+                    <div class="view-title-area">
+                        <h2 class="view-title">Device Catalog</h2>
+                        <p class="view-subtitle">All available smart devices and their configurations</p>
+                    </div>
+                    <button class="add-btn" id="add-device-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        Add Device
+                    </button>
+                </div>
+                <div class="devices-container">
+                    <div class="devices-filters">
+                        <button class="filter-btn active" data-filter="all">All Devices</button>
+                        <button class="filter-btn" data-filter="high">High Power (>2kWh)</button>
+                        <button class="filter-btn" data-filter="medium">Medium (1-2kWh)</button>
+                        <button class="filter-btn" data-filter="low">Low Power (<1kWh)</button>
+                    </div>
+                    <div class="devices-grid" id="devices-grid">
+                        <!-- Dynamic device cards -->
+                    </div>
+                </div>
             </div>
-            <div class="nav-item" id="manage-devices">
-                <div class="nav-icon">🔌</div>
-                <h3>Manage Devices</h3>
-            </div>
-            <div class="nav-item" id="manage-dashboard">
-                <div class="nav-icon">📊</div>
-                <h3>Manage Dashboard</h3>
-            </div>
-            <div class="nav-item" id="train">
-                <div class="nav-icon">🧠</div>
-                <h3>Train</h3>
-            </div>
-            <div class="nav-item" id="about">
-                <div class="nav-icon">ℹ️</div>
-                <h3>About</h3>
-            </div>
-            <div class="nav-item" id="coming-soon">
-                <div class="nav-icon">🚀</div>
-                <h3>Coming Soon</h3>
-            </div>
-        </section>
 
-        <!-- Footer -->
-        <footer>
-            <p>© 2025 AI Energy Optimization System</p>
-        </footer>
+            <!-- Training View -->
+            <div id="view-training" class="view">
+                <div class="view-header">
+                    <div class="view-title-area">
+                        <h2 class="view-title">AI Training Center</h2>
+                        <p class="view-subtitle">Train and monitor your reinforcement learning models</p>
+                    </div>
+                </div>
+                <div class="training-layout">
+                    <!-- Training Control Panel -->
+                    <div class="card training-control">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            New Training Session
+                        </h3>
+                        <div class="training-form">
+                            <div class="form-group">
+                                <label>Select Home</label>
+                                <select id="training-home" class="form-select">
+                                    <!-- Dynamic options -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Training Episodes</label>
+                                <div class="episode-selector">
+                                    <button class="episode-btn" data-value="10">10</button>
+                                    <button class="episode-btn active" data-value="30">30</button>
+                                    <button class="episode-btn" data-value="50">50</button>
+                                    <button class="episode-btn" data-value="100">100</button>
+                                </div>
+                            </div>
+                            <button class="train-btn" id="start-training">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                Start Training
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Neural Network Visualization -->
+                    <div class="card neural-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a10 10 0 1 0 10 10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                            Neural Network
+                        </h3>
+                        <div class="neural-visual" id="neural-visual">
+                            <svg class="neural-svg" viewBox="0 0 400 200">
+                                <!-- Input Layer -->
+                                <g class="layer input-layer">
+                                    <circle cx="50" cy="30" r="12" class="neuron n-input"/>
+                                    <circle cx="50" cy="70" r="12" class="neuron n-input"/>
+                                    <circle cx="50" cy="110" r="12" class="neuron n-input"/>
+                                    <circle cx="50" cy="150" r="12" class="neuron n-input"/>
+                                    <circle cx="50" cy="190" r="12" class="neuron n-input"/>
+                                </g>
+                                <!-- Hidden Layer 1 -->
+                                <g class="layer hidden-layer-1">
+                                    <circle cx="150" cy="40" r="12" class="neuron n-hidden"/>
+                                    <circle cx="150" cy="80" r="12" class="neuron n-hidden"/>
+                                    <circle cx="150" cy="120" r="12" class="neuron n-hidden"/>
+                                    <circle cx="150" cy="160" r="12" class="neuron n-hidden"/>
+                                </g>
+                                <!-- Hidden Layer 2 -->
+                                <g class="layer hidden-layer-2">
+                                    <circle cx="250" cy="40" r="12" class="neuron n-hidden"/>
+                                    <circle cx="250" cy="80" r="12" class="neuron n-hidden"/>
+                                    <circle cx="250" cy="120" r="12" class="neuron n-hidden"/>
+                                    <circle cx="250" cy="160" r="12" class="neuron n-hidden"/>
+                                </g>
+                                <!-- Output Layer -->
+                                <g class="layer output-layer">
+                                    <circle cx="350" cy="70" r="12" class="neuron n-output"/>
+                                    <circle cx="350" cy="110" r="12" class="neuron n-output"/>
+                                    <circle cx="350" cy="150" r="12" class="neuron n-output"/>
+                                </g>
+                                <!-- Connections will be drawn by JS -->
+                                <g class="connections" id="nn-connections"></g>
+                            </svg>
+                            <div class="layer-labels">
+                                <span>Input</span>
+                                <span>Hidden</span>
+                                <span>Hidden</span>
+                                <span>Output</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Training Progress -->
+                    <div class="card progress-card" id="training-progress-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="20" x2="12" y2="10"/>
+                                <line x1="18" y1="20" x2="18" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="16"/>
+                            </svg>
+                            Training Progress
+                        </h3>
+                        <div class="progress-metrics">
+                            <div class="metric">
+                                <div class="metric-ring">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="#FF6B35" stroke-width="8" 
+                                                stroke-dasharray="251" stroke-dashoffset="251" stroke-linecap="round"
+                                                transform="rotate(-90 50 50)" id="episode-ring"/>
+                                    </svg>
+                                    <span class="metric-value" id="episode-count">0</span>
+                                </div>
+                                <span class="metric-label">Episodes</span>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-ring">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="#2EC4B6" stroke-width="8" 
+                                                stroke-dasharray="251" stroke-dashoffset="251" stroke-linecap="round"
+                                                transform="rotate(-90 50 50)" id="reward-ring"/>
+                                    </svg>
+                                    <span class="metric-value" id="avg-reward">--</span>
+                                </div>
+                                <span class="metric-label">Avg Reward</span>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-ring">
+                                    <svg viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+                                        <circle cx="50" cy="50" r="40" fill="none" stroke="#F7C59F" stroke-width="8" 
+                                                stroke-dasharray="251" stroke-dashoffset="50" stroke-linecap="round"
+                                                transform="rotate(-90 50 50)" id="epsilon-ring"/>
+                                    </svg>
+                                    <span class="metric-value" id="epsilon-value">1.0</span>
+                                </div>
+                                <span class="metric-label">Epsilon (ε)</span>
+                            </div>
+                        </div>
+                        <div class="training-chart" id="training-chart">
+                            <canvas id="reward-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Trained Models -->
+                    <div class="card models-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            Trained Models
+                        </h3>
+                        <div class="models-list" id="models-list">
+                            <div class="model-empty">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="12" y1="8" x2="12" y2="12"/>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                </svg>
+                                <p>No models trained yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="view-analytics" class="view">
+                <div class="view-header">
+                    <div class="view-title-area">
+                        <h2 class="view-title">Energy Analytics</h2>
+                        <p class="view-subtitle">Deep insights into your energy consumption patterns</p>
+                    </div>
+                    <div class="time-filter">
+                        <button class="time-btn active" data-period="day">Day</button>
+                        <button class="time-btn" data-period="week">Week</button>
+                        <button class="time-btn" data-period="month">Month</button>
+                    </div>
+                </div>
+                <div class="analytics-grid">
+                    <!-- Energy Breakdown -->
+                    <div class="card breakdown-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
+                                <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+                            </svg>
+                            Energy Breakdown
+                        </h3>
+                        <div class="breakdown-content">
+                            <div class="donut-container">
+                                <svg viewBox="0 0 200 200" class="donut-chart" id="donut-chart">
+                                    <!-- Dynamic segments -->
+                                </svg>
+                                <div class="donut-center">
+                                    <span class="donut-value" id="total-kwh">0.0</span>
+                                    <span class="donut-label">kWh</span>
+                                </div>
+                            </div>
+                            <div class="breakdown-legend" id="breakdown-legend">
+                                <!-- Dynamic legend items -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estimated vs Real -->
+                    <div class="card comparison-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="20" x2="18" y2="10"/>
+                                <line x1="12" y1="20" x2="12" y2="4"/>
+                                <line x1="6" y1="20" x2="6" y2="14"/>
+                            </svg>
+                            Estimated vs Real Consumption
+                        </h3>
+                        <div class="comparison-bars" id="comparison-bars">
+                            <!-- Dynamic bars -->
+                        </div>
+                    </div>
+
+                    <!-- Room Energy Distribution -->
+                    <div class="card room-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                            </svg>
+                            Energy by Room
+                        </h3>
+                        <div class="room-bars" id="room-bars">
+                            <!-- Dynamic room bars -->
+                        </div>
+                    </div>
+
+                    <!-- Savings Summary -->
+                    <div class="card savings-card">
+                        <h3 class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                            Savings Summary
+                        </h3>
+                        <div class="savings-grid">
+                            <div class="savings-item">
+                                <div class="savings-icon green">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M23 6l-9.5 9.5-5-5L1 18"/>
+                                    </svg>
+                                </div>
+                                <div class="savings-info">
+                                    <span class="savings-value" id="energy-saved">0 kWh</span>
+                                    <span class="savings-label">Energy Saved</span>
+                                </div>
+                            </div>
+                            <div class="savings-item">
+                                <div class="savings-icon gold">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="12" y1="1" x2="12" y2="23"/>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                    </svg>
+                                </div>
+                                <div class="savings-info">
+                                    <span class="savings-value" id="money-saved">$0.00</span>
+                                    <span class="savings-label">Money Saved</span>
+                                </div>
+                            </div>
+                            <div class="savings-item">
+                                <div class="savings-icon teal">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/>
+                                        <path d="M8.5 8.5v.01"/>
+                                        <path d="M16 15.5v.01"/>
+                                        <path d="M12 12v.01"/>
+                                        <path d="M11 17v.01"/>
+                                        <path d="M7 14v.01"/>
+                                    </svg>
+                                </div>
+                                <div class="savings-info">
+                                    <span class="savings-value" id="co2-saved">0 kg</span>
+                                    <span class="savings-label">CO₂ Reduced</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="efficiency-meter">
+                            <span class="meter-label">Optimization Efficiency</span>
+                            <div class="meter-bar">
+                                <div class="meter-fill" id="efficiency-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="meter-value" id="efficiency-value">75%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <!-- Manage Homes Page -->
-    <div id="manage-homes-page" style="display: none;">
-        <!-- Header Section -->
-        <header>
-            <div class="header-left">
-                <h1 id="home-name">Home Name</h1>
+    <!-- Modals Container -->
+    <div class="modal-overlay" id="modal-overlay">
+        <!-- Add Home Modal -->
+        <div class="modal" id="modal-add-home">
+            <div class="modal-header">
+                <h3>Create New Home</h3>
+                <button class="modal-close">&times;</button>
             </div>
-            <div class="header-center">
-                <h2>Manage Homes</h2>
-            </div>
-            <div class="header-right">
-                <button id="back-to-dashboard" class="back-button">← Back to Dashboard</button>
-            </div>
-        </header>
-
-        <!-- Home Selection Section -->
-        <section class="home-selection">
-            <div class="selection-container">
-                <label for="home-selector">Select Home:</label>
-                <select id="home-selector" class="home-dropdown">
-                    <option value="home1">Main Home</option>
-                    <option value="home2">Vacation House</option>
-                    <option value="home3">Office</option>
-                </select>
-            </div>
-        </section>
-
-        <!-- Home Management Options -->
-        <section class="home-management-options">
-            <div class="options-grid">
-                <div class="option-item">
-                    <div class="option-icon">➕🏠</div>
-                    <h3>Add Home</h3>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Home Name</label>
+                    <input type="text" id="new-home-name" class="form-input" placeholder="e.g., Beach House">
                 </div>
-                <div class="option-item">
-                    <div class="option-icon">➕🚪</div>
-                    <h3>Add Room</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">✏️🚪</div>
-                    <h3>Rename Room</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🔌➡️</div>
-                    <h3>Assign Device</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">📊🏠</div>
-                    <h3>Home Summary</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🗑️🏠</div>
-                    <h3>Delete Home</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🗑️🚪</div>
-                    <h3>Delete Room</h3>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <p>© 2025 AI Energy Optimization System</p>
-        </footer>
-    </div>
-
-    <!-- Manage Devices Page -->
-    <div id="manage-devices-page" style="display: none;">
-        <!-- Header Section -->
-        <header>
-            <div class="header-left">
-                <h1 id="home-name">Home Name</h1>
-            </div>
-            <div class="header-center">
-                <h2>Manage Devices</h2>
-            </div>
-            <div class="header-right">
-                <button id="back-to-dashboard-from-devices" class="back-button">← Back to Dashboard</button>
-            </div>
-        </header>
-
-        <!-- Device Selection Section -->
-        <section class="device-selection">
-            <div class="selection-container">
-                <label for="device-selector">Select Device:</label>
-                <select id="device-selector" class="device-dropdown">
-                    <option value="device1">Living Room TV</option>
-                    <option value="device2">Kitchen Lights</option>
-                    <option value="device3">Bedroom AC</option>
-                    <option value="device4">Smart Thermostat</option>
-                </select>
-            </div>
-        </section>
-
-        <!-- Device Management Options -->
-        <section class="device-management-options">
-            <div class="options-grid">
-                <div class="option-item">
-                    <div class="option-icon">➕🔌</div>
-                    <h3>Add Device</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🔄🔌</div>
-                    <h3>Update Device</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🗑️🔌</div>
-                    <h3>Remove Device</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">➕🔑</div>
-                    <h3>Add Permission</h3>
-                </div>
-                <div class="option-item">
-                    <div class="option-icon">🗑️🔑</div>
-                    <h3>Remove Permission</h3>
-                </div>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <footer>
-            <p>© 2025 AI Energy Optimization System</p>
-        </footer>
-    </div>
-
-    <!-- Train Page -->
-    <div id="train-page" style="display: none;">
-        <!-- Header Section -->
-        <header>
-            <div class="header-left">
-                <h1 id="home-name">Home Name</h1>
-            </div>
-            <div class="header-center">
-                <h2>Train AI Optimizer</h2>
-            </div>
-            <div class="header-right">
-                <button id="back-to-dashboard-from-train" class="back-button">← Back to Dashboard</button>
-            </div>
-        </header>
-
-        <!-- Home Selection Section -->
-        <section class="home-selection">
-            <div class="selection-container">
-                <label for="train-home-selector">Select Home:</label>
-                <select id="train-home-selector" class="home-dropdown">
-                    <option value="home1">Main Home</option>
-                    <option value="home2">Vacation House</option>
-                    <option value="home3">Office</option>
-                </select>
-            </div>
-        </section>
-
-        <!-- Training Options -->
-        <section class="training-options">
-            <div class="train-options-grid">
-                <div class="train-option-item">
-                    <div class="train-option-icon">🧠⚡</div>
-                    <h3>Train House Optimizer</h3>
-                    <p>Train the AI to optimize energy usage based on historical patterns.</p>
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 68%;"></div>
+                <div class="form-group">
+                    <label>Comfort Temperature Range</label>
+                    <div class="range-inputs">
+                        <div class="range-input-group">
+                            <span class="range-label">Min</span>
+                            <input type="number" id="comfort-min" class="form-input" value="21" min="15" max="30">
+                            <span class="range-unit">°C</span>
                         </div>
-                        <span class="progress-text">68% Trained</span>
-                    </div>
-                    <button class="train-button">Start Training</button>
-                </div>
-                <div class="train-option-item">
-                    <div class="train-option-icon">🔄⚙️</div>
-                    <h3>Simulate Optimizer</h3>
-                    <p>Run a simulation to estimate potential energy savings.</p>
-                    <div class="simulation-results">
-                        <div class="sim-result">
-                            <span class="sim-label">Est. Savings:</span>
-                            <span class="sim-value">15-22%</span>
-                        </div>
-                        <div class="sim-result">
-                            <span class="sim-label">Confidence:</span>
-                            <span class="sim-value">High</span>
+                        <div class="range-divider">—</div>
+                        <div class="range-input-group">
+                            <span class="range-label">Max</span>
+                            <input type="number" id="comfort-max" class="form-input" value="25" min="15" max="30">
+                            <span class="range-unit">°C</span>
                         </div>
                     </div>
-                    <button class="simulate-button">Run Simulation</button>
                 </div>
             </div>
-        </section>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">Cancel</button>
+                <button class="btn-primary" id="confirm-add-home">Create Home</button>
+            </div>
+        </div>
 
-        <!-- Footer -->
-        <footer>
-            <p>© 2025 AI Energy Optimization System</p>
-        </footer>
+        <!-- Add Room Modal -->
+        <div class="modal" id="modal-add-room">
+            <div class="modal-header">
+                <h3>Add Room to <span id="room-modal-home">Home</span></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Room Name</label>
+                    <input type="text" id="new-room-name" class="form-input" placeholder="e.g., Master Bedroom">
+                </div>
+                <div class="room-suggestions">
+                    <span class="suggestion" data-name="Living Room">Living Room</span>
+                    <span class="suggestion" data-name="Bedroom">Bedroom</span>
+                    <span class="suggestion" data-name="Kitchen">Kitchen</span>
+                    <span class="suggestion" data-name="Bathroom">Bathroom</span>
+                    <span class="suggestion" data-name="Office">Office</span>
+                    <span class="suggestion" data-name="Garage">Garage</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">Cancel</button>
+                <button class="btn-primary" id="confirm-add-room">Add Room</button>
+            </div>
+        </div>
+
+        <!-- Add Device Modal -->
+        <div class="modal" id="modal-add-device">
+            <div class="modal-header">
+                <h3>Add New Device</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Device Name</label>
+                    <input type="text" id="new-device-name" class="form-input" placeholder="e.g., Smart Thermostat">
+                </div>
+                <div class="form-group">
+                    <label>Base Power Consumption</label>
+                    <div class="input-with-unit">
+                        <input type="number" id="new-device-kwh" class="form-input" placeholder="1.5" step="0.1" min="0">
+                        <span class="input-unit">kWh</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Permissions</label>
+                    <div class="permissions-grid" id="permissions-grid">
+                        <label class="checkbox-item"><input type="checkbox" value="turn_on" checked><span>Turn On</span></label>
+                        <label class="checkbox-item"><input type="checkbox" value="turn_off" checked><span>Turn Off</span></label>
+                        <label class="checkbox-item"><input type="checkbox" value="eco_mode"><span>Eco Mode</span></label>
+                        <label class="checkbox-item"><input type="checkbox" value="set_low"><span>Set Low</span></label>
+                        <label class="checkbox-item"><input type="checkbox" value="set_medium"><span>Set Medium</span></label>
+                        <label class="checkbox-item"><input type="checkbox" value="set_high"><span>Set High</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">Cancel</button>
+                <button class="btn-primary" id="confirm-add-device">Add Device</button>
+            </div>
+        </div>
+
+        <!-- Assign Device Modal -->
+        <div class="modal" id="modal-assign-device">
+            <div class="modal-header">
+                <h3>Assign Device to <span id="assign-modal-room">Room</span></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="device-select-grid" id="device-select-grid">
+                    <!-- Dynamic device options -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-cancel">Cancel</button>
+                <button class="btn-primary" id="confirm-assign-device">Assign Selected</button>
+            </div>
+        </div>
+
+        <!-- Simulation Results Modal -->
+        <div class="modal modal-wide" id="modal-simulation">
+            <div class="modal-header">
+                <h3>24-Hour Simulation Results</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="sim-results" id="sim-results">
+                    <!-- Dynamic simulation results -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary modal-cancel">Close</button>
+            </div>
+        </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>

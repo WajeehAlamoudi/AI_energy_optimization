@@ -74,18 +74,25 @@ class SmartHomeEnv:
             self.is_weekend = random.random() < (2 / 7)
 
     def _out_temp(self):
+        # MODIFIED: Enhanced error handling for outdoor temperature sensor
+        # Added None checks to prevent arithmetic errors with missing sensor data
         if self.mode == "real":
             try:
                 self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
+                if self.outdoor_temp is None:
+                    raise ValueError("Outdoor temp is None")
                 print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
             except Exception as e:
                 print(f"⚠️ Sensor error: {e}, fallback to last known value.")
-                self.outdoor_temp = random.uniform(10, 40)
+                if self.outdoor_temp is None:
+                    self.outdoor_temp = random.uniform(10, 40)
 
         else:
             self.outdoor_temp = random.uniform(10, 40)
 
     def _indoor_temp(self):
+        # MODIFIED: Enhanced error handling for indoor temperature sensor
+        # Added None checks to ensure valid temperature values for calculations
         if self.mode == "real":
             # Example: call a sensor API or GPIO reader
             try:
@@ -93,7 +100,8 @@ class SmartHomeEnv:
                 print(f"🏡 Real indoor temp: {self.indoor_temp:.1f}°C")
             except Exception as e:
                 print(f"⚠️ Sensor error: {e}, fallback to last known value.")
-                self.indoor_temp = getattr(self, "indoor_temp", np.mean([self.comfort_min, self.comfort_max]))
+                if self.indoor_temp is None:
+                    self.indoor_temp = np.mean([self.comfort_min, self.comfort_max])
         else:
             self.indoor_temp = random.uniform(self.comfort_min, self.comfort_max)
 
@@ -105,7 +113,8 @@ class SmartHomeEnv:
                 print(f"⚡ Real energy usage: {self.total_kWh:.3f} kWh")
             except Exception as e:
                 print(f"⚠️ Energy sensor error: {e}, fallback to last known value.")
-                self.total_kWh = getattr(self, "total_kWh", 0.0)
+                if self.total_kWh is None:
+                    self.total_kWh = 0.0
         else:
             self.total_kWh = 0.0
 

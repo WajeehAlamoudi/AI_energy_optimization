@@ -218,5 +218,16 @@
       "set_high",
       "auto_mode"
     ]
+  },
+  "Tiktok": {
+    "base_kWh": 0.02,
+    "permissions": [
+      "turn_on",
+      "turn_off",
+      "eco_mode",
+      "set_low",
+      "set_medium",
+      "set_high"
+    ]
   }
 }

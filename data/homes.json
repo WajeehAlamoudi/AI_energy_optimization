@@ -1,6 +1,9 @@
 {
   "Default": {
-    "comfort_range": [22, 24],
+    "comfort_range": [
+      22,
+      24
+    ],
     "rooms": {
       "Living Room": {
         "devices": [
@@ -25,7 +28,10 @@
     }
   },
   "Wajeeh": {
-    "comfort_range": [20, 24],
+    "comfort_range": [
+      20,
+      24
+    ],
     "rooms": {
       "Living Room": {
         "devices": [
@@ -45,6 +51,58 @@
           "Fridge",
           "Oven",
           "Dishwasher"
+        ]
+      }
+    }
+  },
+  "Nyc": {
+    "comfort_range": [
+      24,
+      25
+    ],
+    "rooms": {
+      "Living Room": {
+        "devices": [
+          "Air Conditioning",
+          "Heater",
+          "Tv",
+          "Computer",
+          "Lights",
+          "Dehumidifier",
+          "Electric Water Heater",
+          "Tiktok"
+        ]
+      },
+      "Kitchen": {
+        "devices": [
+          "Air Conditioning",
+          "Heater",
+          "Dishwasher",
+          "Oven",
+          "Microwave",
+          "Lights",
+          "Fridge",
+          "Electric Car Charger",
+          "Home Theater System",
+          "Robot Vacuum",
+          "Smart Speaker",
+          "Coffee Maker",
+          "Hair Dryer"
+        ]
+      },
+      "Bedroom": {
+        "devices": [
+          "Air Conditioning",
+          "Heater",
+          "Tv",
+          "Computer",
+          "Lights",
+          "Dehumidifier",
+          "Home Theater System",
+          "Hair Dryer",
+          "Gaming Console",
+          "Air Purifier",
+          "Tiktok"
         ]
       }
     }

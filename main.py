@@ -49,8 +49,15 @@ def run_live_agent(home_name="Default", interval_sec=60, continuous=True):
 
         # === Calculate comfort violation ===
         comfort_violation = 0.0
-        if not (env.comfort_min <= info["indoor_temp"] <= env.comfort_max):
-            comfort_violation = abs(info["indoor_temp"] - np.mean([env.comfort_min, env.comfort_max]))
+        # MODIFIED: Added None-safety checks for sensor values
+        # Prevents "unsupported operand type(s) for -: 'float' and 'NoneType'" errors
+        # Sensor failures can return None values, so we provide safe fallback defaults
+        comfort_min = env.comfort_min if env.comfort_min is not None else 20
+        comfort_max = env.comfort_max if env.comfort_max is not None else 27
+        indoor_temp = info["indoor_temp"] if info["indoor_temp"] is not None else 23
+        
+        if not (comfort_min <= indoor_temp <= comfort_max):
+            comfort_violation = abs(indoor_temp - np.mean([comfort_min, comfort_max]))
 
         # === Structure full record ===
         record = {
@@ -59,13 +66,13 @@ def run_live_agent(home_name="Default", interval_sec=60, continuous=True):
             "step": step,
             "device": info["device"],
             "action": info["action"],
-            "indoor_temp": round(info["indoor_temp"], 2),
-            "outdoor_temp": round(env.outdoor_temp, 2),
+            "indoor_temp": round(indoor_temp, 2),
+            "outdoor_temp": round(env.outdoor_temp if env.outdoor_temp else 20, 2),
             "energy_used": round(info["energy_used"], 3),
             "total_energy": round(total_energy, 3),
             "reward": round(reward, 3),
             "total_reward": round(total_reward, 3),
-            "comfort_range": [env.comfort_min, env.comfort_max],
+            "comfort_range": [comfort_min, comfort_max],
             "comfort_violation": round(comfort_violation, 3),
             "model": model_path.name if model_path.exists() else "untrained"
         }
@@ -74,7 +81,8 @@ def run_live_agent(home_name="Default", interval_sec=60, continuous=True):
 
         # === Print nicely ===
         print(f" → Action: {info['device']} / {info['action']}")
-        print(f" → Indoor: {info['indoor_temp']:.2f}°C | Outdoor: {env.outdoor_temp:.2f}°C")
+        outer_temp = env.outdoor_temp if env.outdoor_temp else 20
+        print(f" → Indoor: {indoor_temp:.2f}°C | Outdoor: {outer_temp:.2f}°C")
         print(f" → Energy: {info['energy_used']:.3f} kWh | Reward: {reward:.3f}")
         print(f" → Total Energy Used: {total_energy:.3f} kWh")
 

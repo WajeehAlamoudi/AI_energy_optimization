@@ -11,7 +11,15 @@ class LSTMPredictor:
             self.load_model(model_path)
 
     def load_model(self, path):
-        self.model = torch.load(path, map_location=self.device)
+        # MODIFIED: Added weights_only=False parameter for PyTorch 2.6+ compatibility
+        # PyTorch 2.6 changed the default from weights_only=False to weights_only=True
+        # This caused "Weights only load failed" errors when loading legacy pickle models
+        # The multioutput_xgb_model.pkl contains XGBoost objects which require weights_only=False
+        try:
+            self.model = torch.load(path, map_location=self.device, weights_only=False)
+        except:
+            # Fallback for newer PyTorch versions
+            self.model = torch.load(path, map_location=self.device, weights_only=False)
         self.model.eval()
         print(f"✅ LSTM model loaded from: {path}")
 
