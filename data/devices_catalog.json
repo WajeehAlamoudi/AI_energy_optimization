@@ -1,233 +1,56 @@
 {
-  "Air Conditioning": {
-    "base_kWh": 3.5,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode"
-    ]
-  },
-  "Heater": {
-    "base_kWh": 3.487,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode"
-    ]
-  },
-  "Dishwasher": {
-    "base_kWh": 1.103,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "standard_mode",
-      "eco_mode",
-      "delay_start",
-      "intensive_mode"
-    ]
-  },
-  "Oven": {
-    "base_kWh": 1.103,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode"
-    ]
-  },
-  "Washing Machine": {
-    "base_kWh": 1.101,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "standard_mode",
-      "eco_mode",
-      "intensive_mode",
-      "delay_start"
-    ]
-  },
-  "Microwave": {
-    "base_kWh": 1.101,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "defrost_mode"
-    ]
-  },
-  "Tv": {
-    "base_kWh": 1.097,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "eco_mode",
-      "standard_mode",
-      "power_save",
-      "sleep_timer"
-    ]
-  },
-  "Computer": {
-    "base_kWh": 1.095,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "sleep_mode",
-      "power_save",
-      "standard_mode",
-      "high_performance"
-    ]
-  },
-  "Lights": {
-    "base_kWh": 1.087,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "dim_low",
-      "dim_medium",
-      "dim_high",
-      "auto_mode"
-    ]
-  },
-  "Fridge": {
-    "base_kWh": 0.298,
-    "permissions": [
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode",
-      "standard_mode",
-      "quick_cool"
-    ]
-  },
-  "Dehumidifier": {
-    "base_kWh": 0.785,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "auto_mode"
-    ]
-  },
-  "Electric Water Heater": {
-    "base_kWh": 4.5,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode"
-    ]
-  },
-  "Electric Car Charger": {
-    "base_kWh": 7.2,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "charge_low",
-      "charge_medium",
-      "charge_high",
-      "scheduled_mode"
-    ]
-  },
-  "Home Theater System": {
-    "base_kWh": 0.95,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "eco_mode"
-    ]
-  },
-  "Robot Vacuum": {
-    "base_kWh": 0.4,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "eco_mode",
-      "standard_mode",
-      "high_power",
-      "scheduled_mode"
-    ]
-  },
-  "Smart Speaker": {
-    "base_kWh": 0.15,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "night_mode"
-    ]
-  },
-  "Coffee Maker": {
-    "base_kWh": 0.8,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "standard_mode",
-      "keep_warm_on",
-      "keep_warm_off",
-      "scheduled_mode"
-    ]
-  },
-  "Hair Dryer": {
-    "base_kWh": 1.8,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "cool_mode"
-    ]
-  },
-  "Gaming Console": {
-    "base_kWh": 0.75,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "standby_mode",
-      "power_save",
-      "standard_mode",
-      "high_performance"
-    ]
-  },
-  "Air Purifier": {
-    "base_kWh": 0.55,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "set_low",
-      "set_medium",
-      "set_high",
-      "auto_mode"
-    ]
-  },
-  "Tiktok": {
-    "base_kWh": 0.02,
-    "permissions": [
-      "turn_on",
-      "turn_off",
-      "eco_mode",
-      "set_low",
-      "set_medium",
-      "set_high"
-    ]
-  }
+  "Air Conditioning (Central)": { "base_kWh": 3.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Air Conditioning (Window Unit)": { "base_kWh": 1.2, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Heater (Space)": { "base_kWh": 1.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Heater (Central/Furnace Blower)": { "base_kWh": 0.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Heat Pump": { "base_kWh": 2.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Electric Water Heater": { "base_kWh": 4.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Tankless Water Heater": { "base_kWh": 3.0, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Electric Car Charger (Level 2)": { "base_kWh": 7.2, "permissions": ["turn_on", "turn_off", "charge_low", "charge_medium", "charge_high", "scheduled_mode"] },
+  "Electric Car Charger (Level 1)": { "base_kWh": 1.4, "permissions": ["turn_on", "turn_off", "charge_low", "charge_medium", "charge_high", "scheduled_mode"] },
+  "Oven (Electric)": { "base_kWh": 2.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Stove/Cooktop (Electric)": { "base_kWh": 2.0, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Induction Cooktop": { "base_kWh": 1.8, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Microwave": { "base_kWh": 1.2, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "defrost_mode"] },
+  "Toaster Oven": { "base_kWh": 1.2, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Dishwasher": { "base_kWh": 1.2, "permissions": ["turn_on", "turn_off", "standard_mode", "eco_mode", "delay_start", "intensive_mode"] },
+  "Washing Machine": { "base_kWh": 0.5, "permissions": ["turn_on", "turn_off", "standard_mode", "eco_mode", "intensive_mode", "delay_start"] },
+  "Dryer (Electric)": { "base_kWh": 3.0, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Refrigerator": { "base_kWh": 0.15, "permissions": ["set_low", "set_medium", "set_high", "eco_mode", "standard_mode", "quick_cool"] },
+  "Freezer (Standalone)": { "base_kWh": 0.1, "permissions": ["set_low", "set_medium", "set_high", "eco_mode"] },
+  "TV (LED/OLED)": { "base_kWh": 0.1, "permissions": ["turn_on", "turn_off", "eco_mode", "standard_mode", "power_save", "sleep_timer"] },
+  "TV (Plasma/Older)": { "base_kWh": 0.35, "permissions": ["turn_on", "turn_off", "eco_mode", "standard_mode", "power_save", "sleep_timer"] },
+  "Computer (Desktop)": { "base_kWh": 0.3, "permissions": ["turn_on", "turn_off", "sleep_mode", "power_save", "standard_mode", "high_performance"] },
+  "Computer (Laptop)": { "base_kWh": 0.05, "permissions": ["turn_on", "turn_off", "sleep_mode", "power_save", "standard_mode", "high_performance"] },
+  "Monitor": { "base_kWh": 0.04, "permissions": ["turn_on", "turn_off", "eco_mode", "standard_mode"] },
+  "Gaming Console": { "base_kWh": 0.15, "permissions": ["turn_on", "turn_off", "standby_mode", "power_save", "standard_mode", "high_performance"] },
+  "Home Theater System": { "base_kWh": 0.35, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Smart Speaker": { "base_kWh": 0.003, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "night_mode"] },
+  "Lights (LED Bulb)": { "base_kWh": 0.01, "permissions": ["turn_on", "turn_off", "dim_low", "dim_medium", "dim_high", "auto_mode"] },
+  "Lights (Incandescent)": { "base_kWh": 0.06, "permissions": ["turn_on", "turn_off", "dim_low", "dim_medium", "dim_high"] },
+  "Ceiling Fan": { "base_kWh": 0.075, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Exhaust Fan (Bathroom)": { "base_kWh": 0.03, "permissions": ["turn_on", "turn_off", "set_low", "set_high"] },
+  "Hair Dryer": { "base_kWh": 1.8, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "cool_mode"] },
+  "Iron": { "base_kWh": 1.2, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Vacuum Cleaner (Corded)": { "base_kWh": 1.4, "permissions": ["turn_on", "turn_off", "set_low", "set_high"] },
+  "Robot Vacuum": { "base_kWh": 0.06, "permissions": ["turn_on", "turn_off", "eco_mode", "standard_mode", "high_power", "scheduled_mode"] },
+  "Coffee Maker": { "base_kWh": 0.9, "permissions": ["turn_on", "turn_off", "standard_mode", "keep_warm_on", "keep_warm_off", "scheduled_mode"] },
+  "Electric Kettle": { "base_kWh": 1.5, "permissions": ["turn_on", "turn_off"] },
+  "Blender": { "base_kWh": 0.4, "permissions": ["turn_on", "turn_off", "set_low", "set_high"] },
+  "Air Fryer": { "base_kWh": 1.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Instant Pot / Pressure Cooker": { "base_kWh": 1.0, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "keep_warm"] },
+  "Dehumidifier": { "base_kWh": 0.5, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "auto_mode"] },
+  "Humidifier": { "base_kWh": 0.04, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "auto_mode"] },
+  "Air Purifier": { "base_kWh": 0.05, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "auto_mode"] },
+  "Pool Pump": { "base_kWh": 1.5, "permissions": ["turn_on", "turn_off", "set_low", "set_high", "scheduled_mode"] },
+  "Hot Tub / Spa Heater": { "base_kWh": 4.0, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high", "eco_mode"] },
+  "Garage Door Opener": { "base_kWh": 0.4, "permissions": ["turn_on", "turn_off"] },
+  "Security System": { "base_kWh": 0.015, "permissions": ["arm", "disarm", "eco_mode"] },
+  "Smart Doorbell": { "base_kWh": 0.002, "permissions": ["turn_on", "turn_off"] },
+  "Router / Modem": { "base_kWh": 0.012, "permissions": ["turn_on", "turn_off", "eco_mode"] },
+  "Printer": { "base_kWh": 0.05, "permissions": ["turn_on", "turn_off", "sleep_mode"] },
+  "Phone Charger": { "base_kWh": 0.005, "permissions": ["turn_on", "turn_off"] },
+  "Electric Blanket": { "base_kWh": 0.2, "permissions": ["turn_on", "turn_off", "set_low", "set_medium", "set_high"] },
+  "Sump Pump": { "base_kWh": 0.5, "permissions": ["turn_on", "turn_off", "auto_mode"] },
+  "Well Pump": { "base_kWh": 1.1, "permissions": ["turn_on", "turn_off", "auto_mode"] }
 }
