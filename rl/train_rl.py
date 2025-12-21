@@ -11,82 +11,78 @@ from lstm_predictor import LSTMPredictor
 from paths import MODELS_DIR
 
 
-# === CONFIGURATION ===
-# NUM_EPISODES = 50 # simulate 50 days of RL training
-# MAX_STEPS_PER_EPISODE = 24 # each = 24 hours
-# SAVE_EVERY = 10 # save model every 10 episodes
-#
+# Notes (high level):
+# - Each episode = one simulated day (MAX_STEPS_PER_EPISODE hours)
+# - State is either:
+#   * 2 features: [indoor_temp, total_kWh]  (no predictor)
+#   * 4 features: [indoor_temp, total_kWh, predicted_temp, predicted_kWh] (with predictor)
+# - KPIs are logged each episode, and model checkpoints saved every SAVE_EVERY episodes
 
 def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=24, SAVE_EVERY=10):
-    print("=== 🏠 INITIALIZING ENVIRONMENT ===")
+    # ---------- Environment ----------
+    print(f"[INFO] | === INITIALIZING ENVIRONMENT ===")
     env = SmartHomeEnv(home_name=HOME_NAME)
     action_size = len(env.action_space)
 
+    #  Optional Predictor
+    # If model file exists, we extend the state with predicted values (kept exactly as your code).
     lstm_path = MODELS_DIR / "multioutput_xgb_model.pkl"
     if lstm_path.exists():
-        print(f"✅ Found LSTM model at: {lstm_path}")
+        print(f"[INFO] | Found LSTM model at: {lstm_path}")
         lstm = LSTMPredictor(model_path=lstm_path)
-        state_size = 4  # [current_temp, total_kWh, predicted_temp, predicted_kWh]
+        state_size = 4
     else:
-        print("⚠️ No LSTM model found. Using simulated state only.")
+        print(f"[WARN] | No LSTM model found. Using simulated state only.")
         lstm = None
-        state_size = env.state_size  # fallback: 2 features
+        state_size = env.state_size
 
-    print(f"Environment ready → {action_size} actions, state size {state_size}")
+    print(f"[INFO] | Environment ready -> {action_size} actions, state size {state_size}")
 
-    print("=== 🤖 INITIALIZING AGENT ===")
-
+    #  Agent + KPI Logger
+    print(f"[INFO] | === INITIALIZING AGENT ===")
     agent = RLAgent(state_size=state_size, action_size=action_size)
     agent.load_model(MODELS_DIR / f"checkpoints/{HOME_NAME.lower()}_final.pth")
 
     tracker = TrainingKPI(home_name=HOME_NAME)
-    print("📊 KPI Logger ready.\n")
+    print(f"[INFO] | KPI Logger ready.\n")
 
-    # === TRAINING LOOP ===
+    #  Training Loop
     for episode in tqdm(range(1, NUM_EPISODES + 1), desc="Training Progress", ncols=100):
+        # Reset for new episode/day
         state = env.reset()
+
+        # Episode accumulators
         total_reward = 0.0
         total_energy = 0.0
         total_loss = 0.0
-
-        temps = []
+        temps = []  # for comfort metrics
 
         for step in range(MAX_STEPS_PER_EPISODE):
+            # Build input state for the agent
             if lstm:
-                # 1️⃣ Prepare input for LSTM (features)
-
-                # lstm_input = [env.indoor_temp, env.outdoor_temp, ......]
-
-                # LSTM predicts the next indoor temperature and kWh
+                # lstm_input is intentionally left as-is (you define it in your pipeline)
                 predicted_kWh, predicted_temp = lstm.predict(lstm_input)
-
-                # Combine current & forecasted values
                 state_input = np.array([
-
-                    env.indoor_temp,  # current indoor temp
-                    env.total_kWh,  # current energy used so far
-
-
-                    predicted_temp,  # next predicted indoor temp
-                    predicted_kWh  # next predicted kWh
+                    env.indoor_temp,
+                    env.total_kWh,
+                    predicted_temp,
+                    predicted_kWh
                 ], dtype=np.float32)
             else:
-                # fallback if no LSTM
                 state_input = state
 
+            # Track loss (if replay returns 0.0 early, that's fine)
             loss_value = agent.replay(batch_size=32)
             total_loss += float(loss_value)
-            # Choose action
+
+            # Act -> Step -> Store -> Train
             action_idx = agent.act(state_input)
             next_state, reward, done, info = env.step(action_idx)
 
-            # Store experience
             agent.remember(state, action_idx, reward, next_state, done)
-
-            # Training step
             agent.replay(batch_size=32)
 
-            # Accumulate metrics
+            # Collect metrics
             total_reward += reward
             total_energy += info["energy_used"]
             temps.append(info["indoor_temp"])
@@ -95,13 +91,14 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
             if done:
                 break
 
+        # Episode Metrics
         avg_temp = np.mean(temps)
         comfort_min, comfort_max = env.comfort_min, env.comfort_max
         comfort_violation = np.mean([
             abs(t - np.clip(t, comfort_min, comfort_max)) for t in temps
         ])
 
-        # === LOG KPIs ===
+        #  KPI Logging
         avg_loss = total_loss / MAX_STEPS_PER_EPISODE
         tracker.log(
             episode=int(episode),
@@ -113,24 +110,26 @@ def train_rl_agent(HOME_NAME="Default", NUM_EPISODES=50, MAX_STEPS_PER_EPISODE=2
             loss=float(avg_loss)
         )
 
-        print(f"\n📅 Episode {episode:03d} finished:")
-        print(f"   Total Reward     : {total_reward:.3f}")
-        print(f"   Total Energy (kWh): {total_energy:.3f}")
-        print(f"   Avg Temp (°C)    : {avg_temp:.2f}")
-        print(f"   Epsilon          : {agent.epsilon:.3f}")
+        #  Console Summary
+        print(f"\n[INFO] | Episode {episode:03d} finished:")
+        print(f"[INFO] | Total Reward      : {total_reward:.3f}")
+        print(f"[INFO] | Total Energy (kWh): {total_energy:.3f}")
+        print(f"[INFO] | Avg Temp (°C)     : {avg_temp:.2f}")
+        print(f"[INFO] | Epsilon           : {agent.epsilon:.3f}")
 
-        # === SAVE CHECKPOINT ===
+        #  Checkpointing
         if episode % SAVE_EVERY == 0:
             save_path = MODELS_DIR / f"checkpoints/{HOME_NAME.lower().replace(' ', '_')}_ep{episode:03d}.pth"
             agent.save_model(save_path)
 
-    # === FINALIZE ===
+    #  Finalize
     final_path = MODELS_DIR / f"checkpoints/{HOME_NAME.lower().replace(' ', '_')}_final.pth"
     agent.save_model(final_path)
+
     tracker.plot(save=True, show=False)
     tracker.summary(last_n=10)
 
-    print("\n=== ✅ TRAINING COMPLETE ===")
-    print(f"Model saved → {MODELS_DIR / f'checkpoints/{HOME_NAME}_final_agent_model.pth'}")
-    print(f"KPI log → {tracker.csv_path}")
-    print(f"Plots → {tracker.plots_dir}")
+    print(f"\n[INFO] | === TRAINING COMPLETE ===")
+    print(f"[INFO] | Model saved -> {MODELS_DIR / f'checkpoints/{HOME_NAME}_final_agent_model.pth'}")
+    print(f"[INFO] | KPI log -> {tracker.csv_path}")
+    print(f"[INFO] | Plots -> {tracker.plots_dir}")

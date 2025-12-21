@@ -4,6 +4,9 @@ import numpy as np
 
 class LSTMPredictor:
     def __init__(self, model_path=None, device="cpu"):
+
+        # - Loads a saved model from disk (if model_path provided)
+        # - Uses CPU by default, can be switched to "cuda" if available
         self.model_path = model_path
         self.device = device
         self.model = None
@@ -11,23 +14,26 @@ class LSTMPredictor:
             self.load_model(model_path)
 
     def load_model(self, path):
-        # MODIFIED: Added weights_only=False parameter for PyTorch 2.6+ compatibility
-        # PyTorch 2.6 changed the default from weights_only=False to weights_only=True
-        # This caused "Weights only load failed" errors when loading legacy pickle models
-        # The multioutput_xgb_model.pkl contains XGBoost objects which require weights_only=False
+
+        # - PyTorch 2.6+ may require weights_only=False for legacy pickle-based models
+        # - This file may include non-torch objects (e.g., XGBoost), so we force weights_only=False
         try:
             self.model = torch.load(path, map_location=self.device, weights_only=False)
         except:
-            # Fallback for newer PyTorch versions
+            # Fallback (kept as-is)
             self.model = torch.load(path, map_location=self.device, weights_only=False)
+
         self.model.eval()
-        print(f"✅ LSTM model loaded from: {path}")
+        print(f"[INFO] | LSTM model loaded from: {path}")
 
     def predict(self, features):
         """
-        features: list or np.array → [outdoor_temp, hour, season, device_usage...]
+        features: list or np.array -> [outdoor_temp, hour, season, device_usage...]
         returns (predicted_kWh, predicted_indoor_temp)
         """
+
+        # - Converts features to a float32 tensor with batch dimension
+        # - Model output expected as [kWh, temp]
         if self.model is None:
             raise RuntimeError("⚠️ LSTM model not loaded yet.")
 

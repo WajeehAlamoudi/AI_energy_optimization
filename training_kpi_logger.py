@@ -9,6 +9,9 @@ from paths import LOGS_DIR
 
 class TrainingKPI:
     def __init__(self, home_name):
+
+        # - Writes per-home training KPIs to CSV under logs/<HOME>/
+        # - Can plot and print summary from the CSV
         self.home_name = home_name.strip().title().replace(" ", "_")
         self.home_log_dir = LOGS_DIR / self.home_name
         self.home_log_dir.mkdir(parents=True, exist_ok=True)
@@ -35,7 +38,7 @@ class TrainingKPI:
             comfort_violation: float = 0.0,
             loss: float = None,
     ):
-        """Log one episode of training progress"""
+        # - Appends one row per episode
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(self.csv_path, mode="a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
@@ -45,7 +48,8 @@ class TrainingKPI:
             ])
 
     def plot(self, save=True, show=True):
-        """Visualize and optionally save the reward, epsilon, and energy trends"""
+
+        # - Plots reward, energy, epsilon from CSV
         df = pd.read_csv(self.csv_path)
 
         plt.figure(figsize=(10, 5))
@@ -64,7 +68,7 @@ class TrainingKPI:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             png_path = self.plots_dir / f"{self.home_name}_kpi_{timestamp}.png"
             plt.savefig(png_path)
-            print(f"📊 KPI plot saved → {png_path.name}")
+            print(f"[INFO] | KPI plot saved -> {png_path.name}")
 
         if show:
             plt.show()
@@ -72,8 +76,8 @@ class TrainingKPI:
             plt.close()
 
     def summary(self, last_n=10):
-        """Print recent episode stats"""
+        # - Prints last N rows from CSV
         df = pd.read_csv(self.csv_path)
         recent = df.tail(last_n)
-        print(f"=== 📈 Last {last_n} Episodes Summary ===")
+        print(f"[INFO] | Last {last_n} Episodes Summary")
         print(recent[["episode", "reward", "total_energy_kWh", "avg_temp", "epsilon"]].to_string(index=False))

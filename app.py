@@ -8,7 +8,7 @@ from pathlib import Path
 
 from starlette.staticfiles import StaticFiles
 
-# === Import project modules ===
+# Project modules
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
@@ -21,10 +21,10 @@ from training_kpi_logger import TrainingKPI
 from lstm_predictor import LSTMPredictor
 from paths import DATA_DIR, LOGS_DIR, MODELS_DIR
 
-# === Initialize FastAPI app ===
+# FastAPI app
 app = FastAPI(title="AI Energy Optimization API")
 
-# Allow frontend connections
+# CORS (frontend access)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,7 +34,7 @@ app.add_middleware(
 )
 
 
-# === 🌍 SYSTEM INITIALIZATION ===
+# System init (calibration + load managers)
 @app.get("/api/init")
 def init_system():
     calibrator = ImpactCalibrator()
@@ -49,7 +49,7 @@ def init_system():
     }
 
 
-# === 🏠 HOME MANAGEMENT ===
+# Home management
 @app.get("/api/homes")
 def list_homes():
     manager = HomeManager()
@@ -92,7 +92,7 @@ def assign_device(home_name: str = Body(...), room_name: str = Body(...), device
     return manager.assign_device(home_name, room_name, device_name)
 
 
-# === ⚙️ DEVICE MANAGEMENT ===
+# Device management
 @app.get("/api/devices")
 def list_devices():
     manager = DeviceManager()
@@ -111,7 +111,7 @@ def add_permission(name: str = Body(...), permission: str = Body(...)):
     return manager.add_permission(name, permission)
 
 
-# === 🌤️ WEATHER ===
+# Weather endpoint (location + outdoor temp)
 @app.get("/api/weather")
 def get_weather():
     loc = get_user_location()
@@ -125,12 +125,10 @@ def get_weather():
     }
 
 
-# === 🤖 TRAINING ===
+# Training endpoint (returns structured error if training fails)
 @app.post("/api/train")
 def train_agent(home: str = Body(...), episodes: int = Body(30)):
-    # MODIFIED: Added try-catch wrapper to prevent server crashes
-    # Returns structured error response instead of raising exceptions
-    # This allows frontend to display training errors gracefully
+    # Note: try/except prevents server crash and lets frontend show error.
     try:
         model_path = MODELS_DIR / f"checkpoints/{home.lower().replace(' ', '_')}_final.pth"
         train_rl_agent(HOME_NAME=home, NUM_EPISODES=episodes)
@@ -146,7 +144,7 @@ def train_agent(home: str = Body(...), episodes: int = Body(30)):
         }
 
 
-# === ☀️ SIMULATION ===
+# Simulation endpoint (one day run using trained model)
 @app.post("/api/simulate/day")
 def simulate_day(home: str = Body(..., embed=True)):
     try:
@@ -182,20 +180,20 @@ def simulate_day(home: str = Body(..., embed=True)):
         }
 
 
+# Live optimizer (background thread per home)
 running_threads = {}
 
 
 @app.post("/api/activate_optimizer")
 def activate_optimizer(home: str = "Default", interval_sec: int = 3600):
     """
-    Start the live RL optimizer for a specific home.
-    Runs asynchronously in a background thread.
+    Starts the live RL optimizer for a home in a background thread.
     """
     def background_run():
         try:
             run_live_agent(home_name=home, interval_sec=interval_sec, continuous=True)
         except Exception as e:
-            print(f"⚠️ Live optimizer crashed for {home}: {e}")
+            print(f"[WARN] | Live optimizer crashed for {home}: {e}")
 
     if home in running_threads and running_threads[home].is_alive():
         return {"status": "already_running", "home": home}
@@ -221,7 +219,7 @@ def live_data(home: str = "Default"):
     return {"status": "no_data"}
 
 
-# === 📊 KPIS ===
+# KPI summary endpoints
 @app.get("/api/kpis")
 def get_kpi_summary():
     kpi_path = LOGS_DIR / "training_kpis.csv"
@@ -247,4 +245,5 @@ def get_full_kpi_log():
     return pd.read_csv(kpi_path).to_dict(orient="records")
 
 
+# Serve frontend (static)
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

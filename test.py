@@ -8,7 +8,7 @@ from pathlib import Path
 
 from starlette.staticfiles import StaticFiles
 
-# === Import project modules ===
+# Project modules
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
@@ -17,13 +17,15 @@ from rl.train_rl import train_rl_agent
 from rl.rl_environment import SmartHomeEnv
 from rl.rl_agent import RLAgent
 from rl.rl_utils import get_user_location, get_real_outdoor_temp
-from rl.training_kpi_logger import TrainingKPI
+from training_kpi_logger import TrainingKPI
 from lstm_predictor import LSTMPredictor
 from paths import DATA_DIR, LOGS_DIR, MODELS_DIR
 
 
-# === 🌍 SYSTEM INITIALIZATION ===
 def init_system():
+    # Notes:
+    # - Runs impact calibration (rebuild impact_map.json)
+    # - Loads device + home managers to ensure files are ready
     calibrator = ImpactCalibrator()
     calibrator.calibrate()
     devices = DeviceManager()
@@ -36,5 +38,6 @@ def init_system():
     }
 
 
+# Simple local test call (prints init result)
 gg = init_system()
-print(gg)
+print(f"[INFO] | {gg}")

@@ -1,81 +1,25 @@
 {
-  "quick": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "auto": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "delay": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "turn": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "intensive": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "medium": {
-    "energy_factor": 1.036,
-    "temp_change": -0.022
-  },
-  "scheduled": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "standby": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "save": {
-    "energy_factor": 0.649,
-    "temp_change": -0.054
-  },
-  "eco": {
-    "energy_factor": 0.765,
-    "temp_change": -0.09
-  },
-  "dim": {
-    "energy_factor": 0.774,
-    "temp_change": 0.0
-  },
   "charge": {
-    "energy_factor": 1.349,
-    "temp_change": 0.0
-  },
-  "standard": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "sleep": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "set": {
-    "energy_factor": 1.0,
-    "temp_change": 0.0
-  },
-  "timer": {
-    "energy_factor": 1.0,
+    "energy_factor": 1.232,
     "temp_change": 0.0
   },
   "cool": {
-    "energy_factor": 1.162,
-    "temp_change": -0.111
+    "energy_factor": 1.252,
+    "temp_change": -0.291
   },
-  "mode": {
+  "eco": {
+    "energy_factor": 0.605,
+    "temp_change": -0.085
+  },
+  "on": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
   "warm": {
-    "energy_factor": 1.47,
-    "temp_change": 0.209
+    "energy_factor": 1.424,
+    "temp_change": 0.112
   },
-  "on": {
+  "timer": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
@@ -83,27 +27,83 @@
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "low": {
-    "energy_factor": 0.879,
-    "temp_change": -0.234
-  },
-  "defrost": {
-    "energy_factor": 1.0,
+  "off": {
+    "energy_factor": 0.071,
     "temp_change": 0.0
   },
-  "off": {
-    "energy_factor": 0.043,
+  "standard": {
+    "energy_factor": 1.0,
     "temp_change": 0.0
   },
   "power": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "high": {
-    "energy_factor": 1.237,
-    "temp_change": 0.139
+  "defrost": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "medium": {
+    "energy_factor": 1.05,
+    "temp_change": 0.031
+  },
+  "auto": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
   },
   "night": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "standby": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "disarm": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "arm": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "start": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "delay": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "dim": {
+    "energy_factor": 0.758,
+    "temp_change": 0.0
+  },
+  "turn": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "save": {
+    "energy_factor": 0.715,
+    "temp_change": -0.084
+  },
+  "mode": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "quick": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "set": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "high": {
+    "energy_factor": 1.162,
+    "temp_change": 0.25
+  },
+  "sleep": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
@@ -111,7 +111,15 @@
     "energy_factor": 1.0,
     "temp_change": 0.0
   },
-  "start": {
+  "low": {
+    "energy_factor": 0.894,
+    "temp_change": -0.258
+  },
+  "scheduled": {
+    "energy_factor": 1.0,
+    "temp_change": 0.0
+  },
+  "intensive": {
     "energy_factor": 1.0,
     "temp_change": 0.0
   }

@@ -9,6 +9,9 @@ from paths import DATA_DIR
 
 class ImpactCalibrator:
     def __init__(self, catalog_path= DATA_DIR / "devices_catalog.json", output_path= DATA_DIR / "impact_map.json"):
+        # Notes:
+        # - Reads devices_catalog.json and generates impact_map.json
+        # - impact_map maps keyword -> {energy_factor, temp_change}
         self.catalog_path = Path(catalog_path)
         self.output_path = Path(output_path)
 
@@ -23,15 +26,15 @@ class ImpactCalibrator:
         Automatically generates impact factors for every permission keyword
         found in the current devices_catalog.json.
         """
-        # 🔍 Collect all unique permission keywords
+        # Collect all unique permission keywords from device permissions
         keywords = set()
         for device, info in self.devices.items():
             for perm in info.get("permissions", []):
-                # split by underscores or hyphens for better matching
+                # Split by underscores or hyphens for better matching
                 parts = [p for p in perm.replace("-", "_").split("_") if p]
                 keywords.update(parts)
 
-        # 🧮 Build energy/temperature impact map
+        # Build energy/temperature impact map based on keyword heuristics
         impact_map = {}
         for key in keywords:
             key_lower = key.lower()
@@ -78,9 +81,9 @@ class ImpactCalibrator:
                 "temp_change": round(temp_change, 3)
             }
 
-        # 💾 Save the new impact map
+        # Save the generated impact map
         with open(self.output_path, "w", encoding="utf-8") as f:
             json.dump(impact_map, f, indent=2, ensure_ascii=False)
 
-        print(f"Impact map auto-generated from {len(keywords)} permission keywords.")
+        print(f"[INFO] | Impact map auto-generated from {len(keywords)} permission keywords.")
         return impact_map

@@ -5,14 +5,18 @@ import requests
 
 def get_user_location():
     """Detect user's city and coordinates using ipinfo.io (more reliable)."""
+    # Purpose:
+    # - Fetch user's approximate location (city + lat/lon) from ipinfo.io
+    # - If the request fails for any reason, fallback to Istanbul defaults
     try:
         r = requests.get("https://ipinfo.io/json", timeout=5)
         data = r.json()
 
-        # ipinfo returns "loc" as "lat,lon"
+        # ipinfo returns "loc" as a string "lat,lon"
         loc = data.get("loc", "41.0082,28.9784").split(",")
         lat, lon = float(loc[0]), float(loc[1])
 
+        # Use API values if available, otherwise fallback defaults
         city = data.get("city", "Istanbul")
         country = data.get("country", "TR")
 
@@ -24,12 +28,17 @@ def get_user_location():
         }
 
     except Exception as e:
-        print(f"⚠️ Fallback to Istanbul due to: {e}")
+        # Any failure (network/JSON parsing/missing fields) -> fallback to Istanbul
+        print(f"[WARN] | Fallback to Istanbul due to: {e}")
         return {"city": "Istanbul", "country": "TR", "lat": 41.0082, "lon": 28.9784}
 
 
 def get_real_outdoor_temp(lat, lon):
     """Fetch real outdoor temperature using Open-Meteo (no API key required)."""
+    # Purpose:
+    # - Query Open-Meteo current temperature_2m using latitude/longitude
+    # Behavior:
+    # - On failure, print an ERROR message then re-raise (so caller can decide fallback)
     try:
         url = (
             f"https://api.open-meteo.com/v1/forecast?"
@@ -39,23 +48,33 @@ def get_real_outdoor_temp(lat, lon):
         data = r.json()
         return data["current"]["temperature_2m"]
     except Exception as e:
-        print(f"⚠️ Weather API failed: {e}")
+        print(f"[ERROR] | Weather API failed: {e}")
         raise
 
 
 def get_real_indoor_temp():
     """Simulate sensor not connected — raises error."""
+    # Placeholder:
+    # - Replace this with actual indoor temperature sensor integration later
+    # - Currently raises on purpose for testing/error-path handling
     raise ConnectionError("Indoor temperature sensor not available")
 
 
 def get_real_energy_usage():
     """Simulate energy sensor not connected — raises error."""
+    # Placeholder:
+    # - Replace this with actual energy meter integration later
+    # - Currently raises on purpose for testing/error-path handling
     raise ConnectionError("Energy meter not available")
 
 
 def get_if_weekend():
-
-    NINJAS_KEY="Uroj2S9uJqDd9GWjr8XD8A==Ms2aycJifwN6JYIj"
+    # Purpose:
+    # - Determine if today is NOT a working day using API Ninjas "isworkingday"
+    # Notes:
+    # - Key is hardcoded here exactly as in your original code (no logic change)
+    # - API returns is_workday: False -> weekend OR public holiday
+    NINJAS_KEY = "Uroj2S9uJqDd9GWjr8XD8A==Ms2aycJifwN6JYIj"
     if not NINJAS_KEY:
         raise RuntimeError("API_NINJAS_KEY not set")
 
@@ -80,9 +99,10 @@ def get_if_weekend():
 
         data = r.json()
 
-        # is_workday == False → weekend OR public holiday
+        # is_workday == False -> weekend OR public holiday
         return not data.get("is_workday", True)
 
     except Exception as e:
-        print(f"⚠️ isworkingday API failed: {e}")
+        # If the API fails, keep the original behavior: print warning and return False
+        print(f"[WARN] | isworkingday API failed: {e}")
         return False
