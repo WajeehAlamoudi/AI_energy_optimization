@@ -1,69 +1,68 @@
 import json
 import random
-from datetime import datetime
-
-import numpy as np
+from pathlib import Path
+from collections import deque
 
 from paths import DATA_DIR
+import numpy as np
 from device_manager import DeviceManager
 from home_manager import HomeManager
 from impact_calibrator import ImpactCalibrator
-from rl.rl_utils import (
-    get_user_location,
-    get_real_outdoor_temp,
-    get_real_indoor_temp,
-    get_real_energy_usage,
-    get_if_weekend,
-)
-
-
-
-# Logging (consistent format)
-LEVEL_WIDTH = 5  # INFO, ERROR, WARN, DEBUG
-
-
-def log(level: str, msg: str) -> None:
-    """
-    Simple console logger with fixed format.
-    Example:
-      [2025-12-20 04:12:33] [INFO ] | Resetting environment...
-    """
-    level = (level or "INFO").upper()
-    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{ts}] [{level:<{LEVEL_WIDTH}}] | {msg}")
+from rl.rl_utils import get_user_location, get_real_outdoor_temp, get_real_indoor_temp, get_real_energy_usage, \
+    get_if_weekend
 
 
 class SmartHomeEnv:
-    """
-    Smart home environment for RL:
-      - State: [indoor_temp, total_kWh]
-      - Action: (device, permission) pairs from device catalog / home-specific devices
-      - Dynamics: uses an impact_map (energy_factor, temp_change) per action keyword
-    """
 
-    def __init__(self, home_name=None, mode: str = "real", comfort_range=(20, 27)):
-        # Environment observable variables
+    def __init__(self, home_name=None, mode="real", comfort_range=(20, 27)):
+
+        # === ORIGINAL CORE VARS (kept for compatibility) ===
         self.outdoor_temp = None
         self.indoor_temp = None
         self.total_kWh = None
         self.is_weekend = None
 
-        # User location (used for outdoor weather in real mode)
-        loc = get_user_location() or {}
-        self.city = loc.get("city", "UnknownCity")
-        self.lat = loc.get("lat", 0.0)
-        self.lon = loc.get("lon", 0.0)
-        self.country = loc.get("country", "UnknownCountry")
+        # === NEW FEATURE VARS (simulated if no sensors) ===
+        self.outdoor_humidity = None   # relative_humidity_2m
+        self.room_humidity = None      # room_humidity
+        self.hvac_temperature = None   # HVAC_temperature
+        self.hour = None               # hour (0-23)
 
-        # Managers and mode
+        # History buffers for lag/rolling features
+        self.energy_hist = deque(maxlen=3)     # store energy_used per step
+        self.room_temp_hist = deque(maxlen=3)  # store indoor_temp per step
+
+        # Feature order (exact)
+        self.feature_names = [
+            "temperature_2m",
+            "relative_humidity_2m",
+            "room_temperature",
+            "room_humidity",
+            "HVAC_temperature",
+            "hour",
+            "is_weekend",
+            "energy_lag1",
+            "energy_lag2",
+            "energy_roll3",
+            "room_temp_roll3",
+        ]
+        self.state_size = len(self.feature_names)
+
+        # === LOCATION (already used for weather) ===
+        loc = get_user_location()
+        self.city = loc["city"]
+        self.lat = loc["lat"]
+        self.lon = loc["lon"]
+        self.country = loc["country"]
+
         self.home_name = home_name
         self.home_manager = HomeManager()
         self.manager = DeviceManager()
-        self.mode = mode  # "real" or "sim"
+        self.mode = mode
 
-        # Select device scope + comfort range
+        # specific for new home or falls into default values min in-temp, max in-temp, set self.indoor_temp range
         if self.home_name and self.home_name in self.home_manager.homes:
-            log("INFO", f"Loading environment for home: {self.home_name}")
+            print(f"🏠 Loading environment for home: {self.home_name}")
             self.devices = {
                 d: self.manager.get_all_devices()[d]
                 for d in self.home_manager.get_home_devices(self.home_name)
@@ -72,117 +71,146 @@ class SmartHomeEnv:
                 "comfort_range", comfort_range
             )
         else:
-            log("INFO", "No specific home provided. Using global device catalog.")
+            print("⚙️ No specific home provided. Using global device catalog.")
             self.devices = self.manager.get_all_devices()
             self.comfort_min, self.comfort_max = comfort_range
 
-        # Initialize real/sim signals
+        # here can get any real data from sensors (but your indoor + energy intentionally fail)
         self._out_temp()
         self._indoor_temp()
         self._real_kWh()
         self._is_weekend()
 
-        # Step counter (e.g., one day simulation = 24 steps)
+        # init hour + simulated humidities/HVAC
+        self._init_simulated_features()
+
         self.step_count = 0
 
-        # Load or create impact map (rules for energy/temp effects)
+        # --- Load or create impact map ---
         impact_path = DATA_DIR / "impact_map.json"
         impact_path.parent.mkdir(parents=True, exist_ok=True)
-
         if not impact_path.exists():
-            log("WARN", "Impact map not found. Running calibration...")
+            print("⚠️ Impact map not found. Running calibration...")
             calibrator = ImpactCalibrator()
             calibrator.calibrate()
 
         with open(impact_path, "r", encoding="utf-8") as f:
             self.rules = json.load(f)
 
-        # Action space and state definition
         self.action_space = self._build_action_space()
-        self.state_size = 2  # [indoor_temp, total_kWh]
 
-    def _is_weekend(self) -> None:
-        """
-        Set weekend flag:
-          - real mode: use actual weekday
-          - sim mode : probability-based approximation
-        """
+    # -------------------------
+    # NEW helpers (minimal)
+    # -------------------------
+
+    def _init_simulated_features(self):
+        # hour: if not real sensor/time, tie it to step_count; reset() seeds it to 0.
+        if self.hour is None:
+            self.hour = 0
+
+        # humidity: simulated (since you don't have sensors)
+        if self.outdoor_humidity is None:
+            self.outdoor_humidity = random.uniform(20, 90)
+        if self.room_humidity is None:
+            self.room_humidity = random.uniform(25, 65)
+
+        # hvac temperature: simple proxy (close to indoor)
+        if self.hvac_temperature is None:
+            self.hvac_temperature = float(self.indoor_temp)
+
+        # seed histories so lag/roll features are defined immediately
+        self.energy_hist.clear()
+        self.room_temp_hist.clear()
+        for _ in range(3):
+            self.energy_hist.append(0.0)
+            self.room_temp_hist.append(float(self.indoor_temp))
+
+    def _roll3(self, dq):
+        return float(np.mean(dq)) if len(dq) > 0 else 0.0
+
+    def _get_state(self):
+        # lag features from energy_used history
+        energy_lag1 = self.energy_hist[-2] if len(self.energy_hist) >= 2 else 0.0
+        energy_lag2 = self.energy_hist[-3] if len(self.energy_hist) >= 3 else 0.0
+        energy_roll3 = self._roll3(self.energy_hist)
+        room_temp_roll3 = self._roll3(self.room_temp_hist)
+
+        return np.array([
+            float(self.outdoor_temp),                         # temperature_2m
+            float(self.outdoor_humidity),                     # relative_humidity_2m
+            float(self.indoor_temp),                          # room_temperature
+            float(self.room_humidity),                        # room_humidity
+            float(self.hvac_temperature),                     # HVAC_temperature
+            float(self.hour),                                 # hour
+            float(1.0 if self.is_weekend else 0.0),           # is_weekend
+            float(energy_lag1),                               # energy_lag1
+            float(energy_lag2),                               # energy_lag2
+            float(energy_roll3),                              # energy_roll3
+            float(room_temp_roll3),                           # room_temp_roll3
+        ], dtype=np.float32)
+
+    # -------------------------
+    # ORIGINAL methods (kept)
+    # -------------------------
+
+    def _is_weekend(self):
         if self.mode == "real":
-            self.is_weekend = bool(get_if_weekend())
+            self.is_weekend = get_if_weekend()
         else:
             self.is_weekend = random.random() < (2 / 7)
 
-    def _out_temp(self) -> None:
-        """
-        Update outdoor temperature:
-          - real mode: weather API/sensor using user location
-          - sim mode : random uniform range
-        Includes fallback when sensor returns None or throws.
-        """
+    def _out_temp(self):
+        # keep your original weather logic
         if self.mode == "real":
             try:
                 self.outdoor_temp = get_real_outdoor_temp(self.lat, self.lon)
                 if self.outdoor_temp is None:
-                    raise ValueError("Outdoor temperature is None")
-
-                log("INFO", f"Real outdoor temp for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
-
+                    raise ValueError("Outdoor temp is None")
+                print(f"🌍 Using real weather for {self.city}, {self.country}: {self.outdoor_temp:.1f}°C")
             except Exception as e:
-                log("WARN", f"Outdoor sensor/API error: {e}. Falling back to last known/random value.")
+                print(f"⚠️ Sensor error: {e}, fallback to last known value.")
                 if self.outdoor_temp is None:
                     self.outdoor_temp = random.uniform(10, 40)
         else:
             self.outdoor_temp = random.uniform(10, 40)
 
-    def _indoor_temp(self) -> None:
-        """
-        Update indoor temperature:
-          - real mode: indoor sensor
-          - sim mode : random within comfort range
-        Includes fallback to comfort mean if sensor fails.
-        """
+        # simulate outdoor humidity since you don't have it
+        if self.outdoor_humidity is None:
+            self.outdoor_humidity = random.uniform(20, 90)
+
+    def _indoor_temp(self):
         if self.mode == "real":
             try:
                 self.indoor_temp = get_real_indoor_temp()
-                if self.indoor_temp is None:
-                    raise ValueError("Indoor temperature is None")
-
-                log("INFO", f"Real indoor temp: {self.indoor_temp:.1f}°C")
-
+                # NOTE: your rl_utils raises ConnectionError here on purpose :contentReference[oaicite:3]{index=3}
+                print(f"🏡 Real indoor temp: {self.indoor_temp:.1f}°C")
             except Exception as e:
-                log("WARN", f"Indoor sensor error: {e}. Falling back to last known/comfort mean.")
+                print(f"⚠️ Sensor error: {e}, fallback to last known value.")
                 if self.indoor_temp is None:
-                    self.indoor_temp = float(np.mean([self.comfort_min, self.comfort_max]))
+                    self.indoor_temp = np.mean([self.comfort_min, self.comfort_max])
         else:
             self.indoor_temp = random.uniform(self.comfort_min, self.comfort_max)
 
-    def _real_kWh(self) -> None:
-        """
-        Update cumulative energy usage:
-          - real mode: energy meter/sensor reading
-          - sim mode : starts at 0.0
-        Includes fallback to 0.0 if sensor fails.
-        """
+        # simulate room humidity + hvac temp (simple proxy)
+        if self.room_humidity is None:
+            self.room_humidity = random.uniform(25, 65)
+        if self.hvac_temperature is None:
+            self.hvac_temperature = float(self.indoor_temp)
+
+    def _real_kWh(self):
         if self.mode == "real":
             try:
                 self.total_kWh = get_real_energy_usage()
-                if self.total_kWh is None:
-                    raise ValueError("Energy usage is None")
-
-                log("INFO", f"Real energy usage: {self.total_kWh:.3f} kWh")
-
+                # NOTE: your rl_utils raises ConnectionError here on purpose :contentReference[oaicite:4]{index=4}
+                print(f"⚡ Real energy usage: {self.total_kWh:.3f} kWh")
             except Exception as e:
-                log("WARN", f"Energy sensor error: {e}. Falling back to last known/0.0.")
+                print(f"⚠️ Energy sensor error: {e}, fallback to last known value.")
                 if self.total_kWh is None:
                     self.total_kWh = 0.0
         else:
             self.total_kWh = 0.0
 
     def _build_action_space(self):
-        """
-        Action space = list of (device_name, permission_string) pairs.
-        Example: ("AC", "Turn On"), ("Light", "Dim"), ...
-        """
         actions = []
         for device, info in self.devices.items():
             for perm in info.get("permissions", []):
@@ -190,67 +218,65 @@ class SmartHomeEnv:
         return actions
 
     def reset(self):
-        """
-        Reset environment state for a new episode.
-        Returns: state vector [indoor_temp, total_kWh]
-        """
-        log("INFO", "Resetting environment...")
-
+        print("🔄 Resetting environment...")
         self._out_temp()
         self._indoor_temp()
         self._real_kWh()
         self._is_weekend()
 
         self.step_count = 0
-        return np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)
+        self.hour = 0  # start of day
 
-    def step(self, action_index: int):
-        """
-        Execute action by index:
-          - Update indoor temperature (if HVAC/heater)
-          - Update energy usage based on base_kWh * energy_factor
-          - Apply drift toward outdoor temperature
-          - Compute reward (comfort + energy)
-        Returns: (next_state, reward, done, info)
-        """
-        if not (0 <= action_index < len(self.action_space)):
-            raise IndexError(f"action_index out of range: {action_index}")
+        # re-seed simulated features + histories
+        self._init_simulated_features()
 
+        # return FULL feature vector (11)
+        return self._get_state()
+
+    def step(self, action_index):
         device, action = self.action_space[action_index]
-        base_kWh = float(self.devices[device]["base_kWh"])
+        base_kWh = self.devices[device]["base_kWh"]
 
-        # Default dynamics
-        action_lower = str(action).lower()
+        # === Simplified dynamics (driven by impact map) ===
+        action_lower = action.lower()
         energy_factor = 1.0
         temp_change = 0.0
 
-        # Find first matching rule by keyword
+        # Look up the closest matching rule
         for keyword, rule in self.rules.items():
             if keyword in action_lower:
-                energy_factor = float(rule.get("energy_factor", 1.0))
-                temp_change = float(rule.get("temp_change", 0.0))
+                energy_factor = rule.get("energy_factor", 1.0)
+                temp_change = rule.get("temp_change", 0.0)
                 break
 
-        # Energy for this step
+        # Apply energy use
         energy_used = base_kWh * energy_factor
 
-        # Apply temperature impact for HVAC-like devices
-        if any(k in str(device).lower() for k in ["ac", "air", "heater"]):
+        # Apply temperature impact (only for climate-related devices)
+        if any(k in device.lower() for k in ["ac", "air", "heater"]):
             self.indoor_temp += temp_change
 
-        # Natural drift toward outdoor temperature (simple thermal model)
+        # Natural drift toward outdoor temp
         self.indoor_temp += 0.05 * (self.outdoor_temp - self.indoor_temp)
 
         # Update cumulative metrics
         self.total_kWh += energy_used
         self.step_count += 1
 
-        # -----------------------------
-        # Reward function
-        # -----------------------------
-        comfort_center = float(np.mean([self.comfort_min, self.comfort_max]))
+        # Update hour (each step = 1 hour)
+        self.hour = (self.hour + 1) % 24
 
-        # Comfort penalty / reward
+        # Very light simulated drift for humidity + hvac temp (optional but stable)
+        self.outdoor_humidity = float(np.clip(self.outdoor_humidity + random.uniform(-2, 2), 10, 100))
+        self.room_humidity = float(np.clip(self.room_humidity + random.uniform(-1, 1), 10, 95))
+        self.hvac_temperature = float(self.indoor_temp)  # keep proxy simple
+
+        # Update histories for lags/rolls
+        self.energy_hist.append(float(energy_used))
+        self.room_temp_hist.append(float(self.indoor_temp))
+
+        # === Reward Function (UNCHANGED) ===
+        comfort_center = np.mean([self.comfort_min, self.comfort_max])
         if self.comfort_min <= self.indoor_temp <= self.comfort_max:
             comfort_penalty = 0.0
             comfort_reward = 1.5
@@ -258,23 +284,18 @@ class SmartHomeEnv:
             comfort_penalty = abs(self.indoor_temp - comfort_center)
             comfort_reward = 0.0
 
-        # Energy weighting (optional dynamic scaling)
         energy_weight = 0.8 if energy_used < 3.0 else 1.0
-
-        # Higher reward when energy is low and comfort is maintained
         reward = -(energy_used * energy_weight + comfort_penalty * 1.90) + comfort_reward
 
-        # Episode termination condition: one simulated day (24 steps)
-        done = self.step_count >= 24
+        done = self.step_count >= 24  # one simulated day
 
-        next_state = np.array([self.indoor_temp, self.total_kWh], dtype=np.float32)
+        # return FULL feature vector (11)
+        next_state = self._get_state()
 
-        info = {
+        return next_state, reward, done, {
             "device": device,
             "action": action,
             "energy_used": energy_used,
             "indoor_temp": self.indoor_temp,
             "outdoor_temp": self.outdoor_temp,
         }
-
-        return next_state, reward, done, info
